@@ -33,10 +33,7 @@ Orvella is a full-stack e-commerce web application designed for a smooth online 
 
 3. **Configure environment variables:**
    Create a `.env` file in the root folder using `.env.example`:
-   ```bash
-   cp .env.example .env
-   ```
-   Add your MongoDB URI, Email credentials, Google OAuth keys, and Razorpay keys in `.env`.
+   
 
 4. **Seed sample data (Optional):**
    ```bash
