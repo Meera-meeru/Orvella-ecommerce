@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Orvella | Create account</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="auth-page auth-register-page">
+  <main class="register-layout">
+    <aside class="register-story" aria-label="Welcome to Orvella">
+      <a class="register-brand" href="/" aria-label="Orvella home">orvella<span>.</span></a>
+      <div class="register-story-copy">
+        <p class="register-eyebrow"><span></span> A LITTLE JOY, EVERY DAY</p>
+        <h1>Make room for <em>lovely little things.</em></h1>
+        <p>Thoughtful finds, feel-good details, and everyday favourites — all in one happy place.</p>
+      </div>
+      <div class="register-art" aria-hidden="true">
+        <span class="register-art-sun"></span>
+        <span class="register-art-orbit"></span>
+        <span class="register-art-vase"></span>
+        <span class="register-art-leaf register-art-leaf--one"></span>
+        <span class="register-art-leaf register-art-leaf--two"></span>
+        <span class="register-art-plinth"></span>
+        <span class="register-art-spark register-art-spark--one">✳</span>
+        <span class="register-art-spark register-art-spark--two">✳</span>
+      </div>
+      <p class="register-story-note"><span aria-hidden="true">✦</span> Good things start here.</p>
+    </aside>
+
+    <section class="auth-card auth-card--wide register-card" aria-labelledby="register-heading">
+      <a class="auth-back register-back" href="/">← <span>Back to Orvella</span></a>
+      <div class="register-card-heading">
+        <p class="register-step">YOUR NEXT FAVOURITE THING IS ONE STEP AWAY <span>01 / 02</span></p>
+        <h2 id="register-heading">Create your account</h2>
+        <p class="register-description">Join Orvella for a more delightful kind of everyday.</p>
+        <% if(error){ %>
+          <div class="register-flash" role="alert">
+            <span class="register-flash-icon" aria-hidden="true">!</span>
+            <p><%= error %></p>
+          </div>
+        <% } %>
+      </div>
+      <form class="register-form" action="/register" method="post" novalidate>
+        <div class="register-field">
+          <label for="name">Full name</label>
+          <input id="name" name="name" type="text" maxlength="100" value="<%= name || '' %>" autocomplete="name" placeholder="e.g. Aanya Sharma" required>
+        </div>
+        <div class="register-field">
+          <label for="email">Email address</label>
+          <input id="email" name="email" type="email" value="<%= email || '' %>" autocomplete="email" placeholder="you@example.com" required>
+        </div>
+        <div class="register-field">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" minlength="8" autocomplete="new-password" placeholder="At least 8 characters" required>
+        </div>
+        <div class="register-field">
+          <label for="confirmPassword">Confirm password</label>
+          <input id="confirmPassword" name="confirmPassword" type="password" minlength="8" autocomplete="new-password" placeholder="Enter it once more" required>
+        </div>
+        <div class="register-field register-referral-field">
+          <label for="referralCode">Referral code <span>(optional)</span></label>
+          <input id="referralCode" name="referralCode" type="text" maxlength="20" value="<%= referralCode || '' %>" placeholder="Enter a friend's code">
+        </div>
+        <button type="submit">Create my account <span aria-hidden="true">→</span></button>
+        <p class="register-privacy"><span aria-hidden="true">✦</span> We’ll email you a one-time code to verify your address.</p>
+      </form>
+      <p class="auth-footer register-footer">Already part of Orvella? <a href="/login">Log in <span aria-hidden="true">→</span></a></p>
+    </section>
+  </main>
+</body>
+</html>

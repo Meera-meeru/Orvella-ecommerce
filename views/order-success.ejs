@@ -1,0 +1,29 @@
+<% const order = { id: 'SHP-1049', total: 234.35, deliveryDate: 'September 26, 2026', email: 'alex@example.com' }; %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orvella | Order confirmed</title>
+  
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="store-page">
+  <%- include('partials/store-header') %>
+<main class="page-shell panel order-success-card">
+    <div class="icon">✓</div>
+    <h1>Order confirmed</h1>
+    <p>Thank you for shopping with Orvella. Your order has been received.</p>
+    <section class="summary">
+      <p><strong>Order number</strong><span><%= order.id %></span></p>
+      <p><strong>Total paid</strong><span>$<%= order.total.toFixed(2) %></span></p>
+      <p><strong>Estimated delivery</strong><span><%= order.deliveryDate %></span></p>
+      <p><strong>Confirmation sent to</strong><span><%= order.email %></span></p>
+    </section>
+    <div class="actions">
+      <a class="button" href="/orders/<%= order.id %>">View order</a>
+      <a class="button secondary" href="/">Continue shopping</a>
+    </div>
+  </main>
+</body>
+</html>

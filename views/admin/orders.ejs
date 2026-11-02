@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Orvella Admin | Orders</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="admin-page">
+  <div class="admin-layout">
+    <%- include('../admin-panel/sidebar', { active: 'orders' }) %>
+    <main class="admin-content">
+    <% if(orders){ %>
+      <header class="admin-page-header"><div><p class="admin-eyebrow">FULFILLMENT</p><h1>Order management</h1></div></header>
+      <section class="admin-table-wrap">
+        <% if(orders.length){ %>
+          <table>
+            <thead><tr><th>Order</th><th>Customer</th><th>Date</th><th>Total</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <% orders.forEach(item => { %>
+                <tr>
+                  <td><%= item.orderNumber %></td>
+                  <td><%= item.user ? item.user.name + ' (' + item.user.email + ')' : 'Account unavailable' %></td>
+                  <td><%= new Date(item.createdAt).toLocaleDateString() %></td>
+                  <td>₹<%= item.total.toFixed(2) %></td>
+                  <td><%= item.status %><br><small><%= item.paymentMethod || 'COD' %> · <%= item.paymentStatus || 'Pending' %></small></td>
+                  <td><a href="/admin/orders/<%= item._id %>">Manage</a></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        <% } else { %><p>No orders have been placed.</p><% } %>
+      </section>
+    <% } else { %>
+      <p class="admin-breadcrumb"><a href="/admin/orders">Orders</a><span aria-hidden="true">/</span><%= order.orderNumber %></p>
+      <header class="admin-page-header"><div><p class="admin-eyebrow">ORDER DETAILS</p><h1>Order <%= order.orderNumber %></h1></div></header>
+      <section class="panel">
+        <p>Customer: <%= order.user ? order.user.name + ' (' + order.user.email + ')' : 'Account unavailable' %></p>
+        <p>Status: <strong><%= order.status %></strong></p>
+        <p>Payment: <%= order.paymentMethod || 'COD' %> · <%= order.paymentStatus || 'Pending' %></p>
+        <% if(order.couponCode){ %><p>Coupon <%= order.couponCode %> · discount ₹<%= Number(order.couponDiscount || 0).toFixed(2) %></p><% } %>
+        <% if(order.returnStatus){ %><p>Return: <%= order.returnStatus %></p><% } %>
+        <% order.items.forEach(item => { %><p><%= item.name %> × <%= item.quantity %> — ₹<%= (item.unitPrice * item.quantity).toFixed(2) %></p><% }) %>
+        <h2>Total: ₹<%= order.total.toFixed(2) %></h2>
+        <h2>Delivery address</h2>
+        <p><%= order.address.name %>, <%= order.address.phone %><br><%= order.address.addressLine1 %>, <%= order.address.city %>, <%= order.address.state %> <%= order.address.postalCode %>, <%= order.address.country %></p>
+        <% if(!['Delivered','Cancelled','Returned'].includes(order.status)){ %>
+          <form method="post" action="/admin/orders/<%= order._id %>/status">
+            <label for="status">Update order status</label>
+            <select name="status" id="status">
+              <% if(order.status==='Payment Pending'){ %>
+                <option value="Cancelled">Cancel unpaid order</option>
+              <% } else if(order.status==='Return Requested'){ %>
+                <option value="Returned">Approve return and refund</option><option value="Delivered">Reject return</option>
+              <% } else if(order.status==='Placed'){ %>
+                <option value="Processing">Processing</option><option value="Shipped">Shipped</option><option value="Delivered">Delivered</option><option value="Cancelled">Cancelled</option>
+              <% } else if(order.status==='Processing'){ %>
+                <option value="Shipped">Shipped</option><option value="Delivered">Delivered</option><option value="Cancelled">Cancelled</option>
+              <% } else { %>
+                <option value="Delivered">Delivered</option>
+              <% } %>
+            </select>
+            <button type="submit">Save status</button>
+          </form>
+        <% } %>
+      </section>
+    <% } %>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin login | Orvella</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="admin-login-page">
+  <main class="admin-login-card">
+    <p><a href="/">← Back to store</a></p>
+    <h1>Orvella Admin Login</h1>
+    <% if(message){ %><div class="admin-login-flash" role="status"><span aria-hidden="true">i</span><p><%= message %></p></div><% } %>
+    <% if(error){ %><div class="admin-login-flash" role="alert"><span aria-hidden="true">!</span><p><%= error %></p></div><% } %>
+    <div id="admin-login-validation" class="admin-login-flash" role="alert" hidden><span aria-hidden="true">!</span><p>Please enter your email and password.</p></div>
+    <form method="post" action="/admin/login" novalidate>
+      <label for="adminEmail">Email</label>
+      <input id="adminEmail" type="email" name="email" autocomplete="username">
+      <label for="adminPassword">Password</label>
+      <input id="adminPassword" type="password" name="password" autocomplete="current-password">
+      <button type="submit">Log in</button>
+    </form>
+    <p><a href="/login">Customer sign in</a></p>
+  </main>
+  <script>
+    (() => {
+      const form = document.querySelector('.admin-login-card form');
+      const email = document.getElementById('adminEmail');
+      const password = document.getElementById('adminPassword');
+      const validation = document.getElementById('admin-login-validation');
+
+      form.addEventListener('submit', (event) => {
+        if (!email.value.trim() || !password.value || !email.validity.valid) {
+          event.preventDefault();
+          validation.hidden = false;
+          (!email.value.trim() || !email.validity.valid ? email : password).focus();
+        }
+      });
+
+      form.addEventListener('input', () => {
+        validation.hidden = true;
+      });
+    })();
+  </script>
+</body>
+</html>

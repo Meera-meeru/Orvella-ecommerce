@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Orvella | Categories</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="store-page category-index-page">
+  <%- include('partials/store-header') %>
+
+  <main class="page-shell category-index-content">
+    <% if (categories.length) { %>
+      <% const categoryProductTotal = categories.reduce((total, category) => total + category.products.length, 0); %>
+      <section class="category-index-hero">
+        <div class="category-index-heading">
+          <p class="category-index-eyebrow"><span></span> FIND YOUR KIND OF GOOD</p>
+          <h1>Good things, <em>by category.</em></h1>
+          <p>Thoughtful finds for every corner of your everyday.</p>
+        </div>
+        <div class="category-index-hero-note">
+          <span class="category-index-hero-sparkle" aria-hidden="true">✳</span>
+          <span class="category-index-hero-caption">A LITTLE SOMETHING FOR EVERY DAY</span>
+          <span class="category-index-hero-stat"><strong><%= categories.length %></strong> categories <i></i> <strong><%= categoryProductTotal %></strong> finds</span>
+        </div>
+      </section>
+      <div class="category-index-section-label">
+        <span>EXPLORE THE COLLECTION</span>
+        <span>Curated for you</span>
+      </div>
+      <div class="category-index-list">
+        <% categories.forEach((category, index) => { %>
+          <section class="category-index-row">
+            <a class="category-index-info" href="/categories/<%= category._id %>">
+              <span class="category-index-number"><%= String(index + 1).padStart(2, '0') %></span>
+              <span class="category-index-copy">
+                <strong><%= category.name %></strong>
+                <span><%= category.description || 'Discover thoughtful finds in this category.' %></span>
+                <span class="category-index-product-count"><%= category.products.length %> <%= category.products.length === 1 ? 'item' : 'items' %></span>
+              </span>
+              <span class="category-index-arrow" aria-hidden="true">↗</span>
+            </a>
+            <div class="category-index-showcase">
+              <div class="category-index-products">
+                <% if (category.products.length) { %>
+                  <% category.products.slice(0, 4).forEach((product) => { %>
+                    <a class="category-index-product" href="/products/<%= product._id %>">
+                      <span class="category-index-product-image">
+                        <% if (product.images && product.images[0]) { %>
+                          <img src="<%= product.images[0] %>" alt="">
+                        <% } else { %>
+                          <span aria-hidden="true">Orvella</span>
+                        <% } %>
+                      </span>
+                      <span class="category-index-product-copy">
+                        <strong><%= product.name %></strong>
+                        <span>₹<%= product.salePrice.toFixed(2) %></span>
+                      </span>
+                    </a>
+                  <% }) %>
+                <% } else { %>
+                  <span class="category-index-no-products">New finds are on their way.</span>
+                <% } %>
+              </div>
+              <a class="category-index-view-link" href="/categories/<%= category._id %>">View collection <span aria-hidden="true">→</span></a>
+            </div>
+          </section>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <section class="category-index-empty">
+        <h2>New categories are on their way</h2>
+        <p>Check back soon to explore the collection.</p>
+        <a class="button" href="/products">Browse products</a>
+      </section>
+    <% } %>
+  </main>
+</body>
+</html>

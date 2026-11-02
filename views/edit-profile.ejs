@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Orvella | Edit profile</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="store-page customer-page customer-edit-profile-page">
+  <%- include('partials/store-header') %>
+  <main class="page-shell">
+    <p class="page-kicker"><a href="/profile">← Back to your account</a></p>
+    <header class="customer-page-heading">
+      <div><p class="customer-eyebrow">A LITTLE UPDATE</p><h1>Edit your profile</h1><p>Make your Orvella account feel a little more like you.</p></div>
+    </header>
+    <% if(error){ %><p class="customer-notice customer-notice--error" role="alert"><%= error %></p><% } %>
+    <section class="customer-edit-card">
+      <form action="/profile/edit" method="post" enctype="multipart/form-data" id="editProfileForm">
+        <div class="customer-edit-photo-section">
+          <div class="customer-edit-avatar-wrap">
+            <div class="customer-avatar customer-edit-avatar" id="profileAvatarPreview" data-initial="<%= user.name ? user.name.charAt(0).toUpperCase() : 'O' %>">
+              <% if(user.profileImage){ %><img src="<%= user.profileImage %>" alt="Current profile picture"><% } else { %><span><%= user.name ? user.name.charAt(0).toUpperCase() : 'O' %></span><% } %>
+            </div>
+            <span class="customer-avatar-camera" aria-hidden="true">✦</span>
+          </div>
+          <div class="customer-edit-photo-copy">
+            <p class="customer-eyebrow">YOUR PROFILE PHOTO</p>
+            <h2>Show them a little you.</h2>
+            <p>Choose a clear photo. We’ll crop it into a neat circle for your account.</p>
+            <div class="customer-photo-actions">
+              <label class="customer-photo-upload" for="profileImageInput">Choose a photo <span aria-hidden="true">↑</span></label>
+              <% if(user.profileImage){ %><label class="customer-photo-remove"><input type="checkbox" name="removeProfileImage" id="removeProfileImage"><span>Remove current photo</span></label><% } %>
+            </div>
+            <input class="customer-photo-input" id="profileImageInput" name="profileImage" type="file" accept="image/jpeg,image/png,image/webp" aria-describedby="profileImageHelp">
+            <small id="profileImageHelp">JPG, PNG or WEBP · up to 5 MB</small>
+          </div>
+        </div>
+        <div class="customer-edit-divider"></div>
+        <div class="customer-edit-fields">
+          <div class="customer-edit-field"><label for="name">Full name</label><input id="name" name="name" value="<%= user.name %>" maxlength="100" autocomplete="name" required></div>
+          <div class="customer-edit-field"><label for="email">Email address</label><input id="email" type="email" value="<%= user.email %>" readonly autocomplete="email" aria-describedby="emailHelp"><small id="emailHelp">Email changes require separate verification.</small></div>
+          <div class="customer-edit-field customer-edit-field--phone"><label for="phone">Phone number <span>Optional</span></label><input id="phone" name="phone" type="tel" value="<%= user.phone || '' %>" maxlength="20" pattern="[+0-9() -]{7,20}" autocomplete="tel"></div>
+        </div>
+        <div class="customer-edit-actions"><a href="/profile">Cancel</a><button type="submit">Save changes <span aria-hidden="true">→</span></button></div>
+      </form>
+    </section>
+  </main>
+  <script>
+    const profileImageInput = document.getElementById('profileImageInput');
+    const profileAvatarPreview = document.getElementById('profileAvatarPreview');
+    const removeProfileImage = document.getElementById('removeProfileImage');
+    let previewUrl;
+    profileImageInput.addEventListener('change', () => {
+      const file = profileImageInput.files[0];
+      if (!file) return;
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      previewUrl = URL.createObjectURL(file);
+      profileAvatarPreview.replaceChildren(Object.assign(document.createElement('img'), { src: previewUrl, alt: 'Selected profile picture preview' }));
+      if (removeProfileImage) removeProfileImage.checked = false;
+    });
+    if (removeProfileImage) {
+      removeProfileImage.addEventListener('change', () => {
+        if (!removeProfileImage.checked || profileImageInput.files.length) return;
+        const initial = document.createElement('span');
+        initial.textContent = profileAvatarPreview.dataset.initial;
+        profileAvatarPreview.replaceChildren(initial);
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Orvella | Orders</title><link rel="stylesheet" href="/styles.css"></head>
+<body class="store-page customer-page customer-orders-page"><%- include('partials/store-header') %>
+<main class="page-shell customer-shell">
+  <p class="page-kicker"><a href="/profile">← Back to your account</a></p>
+  <header class="customer-page-heading"><div><p class="customer-eyebrow">EVERY ORDER, ALL IN ONE PLACE</p><h1>Order history</h1><p>Thanks for finding something you love at Orvella.</p></div><span class="customer-count-pill"><span aria-hidden="true">▤</span> <%= orders.length %> <%= orders.length === 1 ? 'order' : 'orders' %></span></header>
+  <% if(orders.length){ %>
+    <section class="customer-order-list" aria-label="Your orders">
+      <% orders.forEach(order => { %>
+        <article class="customer-order-card">
+          <div class="customer-order-top"><div><p class="customer-eyebrow">ORDER PLACED</p><strong><%= new Date(order.createdAt).toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' }) %></strong></div><span class="order-status"><%= order.status %></span></div>
+          <div class="customer-order-main">
+            <div class="customer-order-products" aria-label="<%= order.items.length %> ordered items"><% order.items.slice(0, 3).forEach(item => { %><span class="customer-order-thumb"><% if(item.image){ %><img src="<%= item.image %>" alt=""><% } else { %><span aria-hidden="true">✦</span><% } %></span><% }) %><% if(order.items.length > 3){ %><span class="customer-order-more">+<%= order.items.length - 3 %></span><% } %></div>
+            <div class="customer-order-description"><span class="customer-order-number"><%= order.orderNumber %></span><p><%= order.items.length %> <%= order.items.length === 1 ? 'lovely find' : 'lovely finds' %> · <%= order.paymentMethod %> (<%= order.paymentStatus %>)</p></div>
+            <div class="customer-order-total"><span>ORDER TOTAL</span><strong>₹<%= Number(order.total).toFixed(2) %></strong></div>
+            <a class="customer-order-action" href="/orders/<%= order._id %>">View order <span aria-hidden="true">→</span></a>
+          </div>
+        </article>
+      <% }) %>
+    </section>
+  <% } else { %>
+    <section class="customer-empty-state panel"><span class="customer-empty-art" aria-hidden="true">▤</span><p class="customer-eyebrow">YOUR NEXT GOOD THING AWAITS</p><h2>No orders just yet.</h2><p>Once you find something lovely and place an order, you can follow its journey here.</p><a class="button" href="/products">Explore the collection <span aria-hidden="true">→</span></a></section>
+  <% } %>
+</main></body></html>

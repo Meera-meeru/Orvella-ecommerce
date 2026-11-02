@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Coupons | Orvella</title><link rel="stylesheet" href="/styles.css"></head>
+<body class="admin-page"><div class="admin-layout"><%- include('sidebar', { active: 'coupons' }) %>
+<main class="admin-content">
+  <header class="admin-page-header"><div><p class="admin-eyebrow">PROMOTIONS</p><h1>Coupons</h1></div><a class="admin-button" href="/admin/coupons/new">Create coupon</a></header>
+  <section class="admin-table-wrap"><table><thead><tr><th>Code</th><th>Discount</th><th>Scope</th><th>Uses</th><th>Validity</th><th>Status</th><th></th></tr></thead><tbody>
+    <% coupons.forEach(coupon => { %><tr><td><strong><%= coupon.code %></strong></td><td><%= coupon.discountType==='Percent' ? `${coupon.value}%` : `₹${coupon.value.toFixed(2)}` %></td><td><%= coupon.scope %></td><td><%= coupon.usedCount %><%= coupon.usageLimit ? ` / ${coupon.usageLimit}` : ' / ∞' %></td><td><%= coupon.startsAt ? new Date(coupon.startsAt).toLocaleDateString('en-IN') : 'Now' %> – <%= coupon.endsAt ? new Date(coupon.endsAt).toLocaleDateString('en-IN') : 'No expiry' %></td><td><%= coupon.isActive ? 'Active' : 'Paused' %></td><td><form method="post" action="/admin/coupons/<%= coupon._id %>/toggle"><button type="submit"><%= coupon.isActive ? 'Pause' : 'Activate' %></button></form></td></tr><% }) %>
+  </tbody></table><% if(!coupons.length){ %><p>No coupons created yet.</p><% } %></section>
+</main></div></body></html>

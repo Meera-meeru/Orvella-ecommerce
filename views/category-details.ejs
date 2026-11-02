@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Orvella | <%= category.name %></title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="store-page category-index-page category-details-page">
+  <%- include('partials/store-header') %>
+
+  <main class="page-shell category-index-content">
+    <a class="category-details-back" href="/categories">← All categories</a>
+    <section class="category-index-heading">
+      <p class="category-index-eyebrow">SHOP BY CATEGORY</p>
+      <h1><%= category.name %></h1>
+      <p><%= category.description || 'Discover thoughtful finds in this category.' %></p>
+    </section>
+
+    <% if (products.length) { %>
+      <p class="category-index-count"><%= products.length %> <%= products.length === 1 ? 'product' : 'products' %></p>
+      <div class="category-details-products">
+        <% products.forEach((product) => { %>
+          <a class="category-details-product" href="/products/<%= product._id %>">
+            <span class="category-details-image">
+              <% if (product.images && product.images[0]) { %>
+                <% if (product.images.length > 1) { %>
+                  <span class="product-card-gallery">
+                    <img class="product-card-gallery-main" src="<%= product.images[0] %>" alt="<%= product.name %>">
+                    <% product.images.slice(1, 3).forEach((image, index) => { %>
+                      <span class="product-card-gallery-secondary <%= product.images.length === 2 ? 'product-card-gallery-secondary-single' : '' %>">
+                        <img src="<%= image %>" alt="<%= product.name %> image <%= index + 2 %>">
+                        <% if (index === 1 && product.images.length > 3) { %><span class="product-card-gallery-more">+<%= product.images.length - 3 %></span><% } %>
+                      </span>
+                    <% }) %>
+                  </span>
+                <% } else { %>
+                  <img src="<%= product.images[0] %>" alt="<%= product.name %>">
+                <% } %>
+              <% } else { %>
+                <span class="category-index-image-placeholder">Orvella</span>
+              <% } %>
+              <% if (product.discountPercent) { %>
+                <span class="category-details-badge"><%= product.discountPercent %>% off</span>
+              <% } %>
+            </span>
+            <span class="category-details-copy">
+              <strong><%= product.name %></strong>
+              <span class="category-details-price">₹<%= product.salePrice.toFixed(2) %></span>
+              <span class="category-details-stock"><%= product.stock > 0 ? `${product.stock} in stock` : 'Sold out' %></span>
+            </span>
+          </a>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <section class="category-index-empty">
+        <h2>Products are on their way</h2>
+        <p>There are no products in this category just yet.</p>
+        <a class="button" href="/categories">Explore other categories</a>
+      </section>
+    <% } %>
+  </main>
+</body>
+</html>

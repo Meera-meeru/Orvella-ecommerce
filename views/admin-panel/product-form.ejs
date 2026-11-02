@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title><%= title %> | Orvella</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="admin-page">
+  <div class="admin-layout">
+    <%- include('sidebar', { active: 'products' }) %>
+    <main class="admin-content">
+    <p class="admin-breadcrumb"><a href="/admin">Dashboard</a><span aria-hidden="true">/</span><a href="/admin/products">Products</a></p>
+    <section class="panel">
+      <h1><%= title %></h1>
+      <% if(error){ %><p role="alert"><%= error %></p><% } %>
+      <form method="post" action="<%= action %>" enctype="multipart/form-data">
+        <label for="name">Product name</label>
+        <input id="name" name="name" value="<%= product.name || '' %>" required maxlength="160">
+        <label for="brand">Brand</label>
+        <input id="brand" name="brand" value="<%= product.brand || '' %>" maxlength="100">
+        <label for="category">Category</label>
+        <select id="category" name="category" required>
+          <option value="">Choose category</option>
+          <% categories.forEach(c => { %><option value="<%= c._id %>" <%= String(product.category)===String(c._id) ? 'selected' : '' %>><%= c.name %></option><% }) %>
+        </select>
+        <div class="form-grid">
+          <div><label for="price">Base price (₹)</label><input id="price" type="number" name="price" min="0" step="0.01" value="<%= product.price ?? '' %>" required></div>
+          <div><label for="discountPercent">Discount (%)</label><input id="discountPercent" type="number" name="discountPercent" min="0" max="90" step="1" value="<%= product.discountPercent || 0 %>"></div>
+        </div>
+        <div class="form-grid">
+          <div><label for="stock">Stock quantity</label><input id="stock" type="number" name="stock" min="0" step="1" value="<%= product.stock ?? '' %>" required></div>
+          <div><label for="couponPercent">Coupon discount (%)</label><input id="couponPercent" type="number" name="couponPercent" min="0" max="80" step="1" value="<%= product.couponPercent || 0 %>"></div>
+        </div>
+        <label for="couponCode">Coupon code (optional)</label>
+        <input id="couponCode" name="couponCode" value="<%= product.couponCode || '' %>" maxlength="40" placeholder="SHOP10">
+        <label><input type="checkbox" name="featured" <%= product.featured ? 'checked' : '' %>> Mark as featured</label>
+        <label for="description">Description</label>
+        <textarea id="description" name="description" rows="4"><%= product.description || '' %></textarea>
+        <label for="highlights">Highlights (one per line)</label>
+        <textarea id="highlights" name="highlights" rows="4"><%= (product.highlights || []).join('\n') %></textarea>
+        <label for="specifications">Specifications (one per line, Name: Value)</label>
+        <textarea id="specifications" name="specifications" rows="5"><%= (product.specifications || []).map(s => `${s.name}: ${s.value}`).join('\n') %></textarea>
+        <% if(product.images && product.images.length){ %>
+          <p>Current images:</p>
+          <div class="image-strip"><% product.images.forEach(img => { %><img src="<%= img %>" alt="Current product image"><% }) %></div>
+        <% } %>
+        <label for="images">Product images <%= product._id ? `(${Math.max(0, 3 - (product.images || []).length)} more required; optional after 3)` : '(select at least 3)' %></label>
+        <input id="images" type="file" name="images" accept="image/jpeg,image/png,image/webp" multiple data-required-count="<%= Math.max(0, 3 - (product.images || []).length) %>" aria-describedby="imagesHelp" <%= product._id ? '' : 'required' %>>
+        <p id="imagesHelp" class="muted">Each product must have at least 3 JPG, PNG, or WEBP images. Select up to 8 images per upload (8 MB max each). Images are center-cropped, resized to 800 × 800, and saved as WebP.</p>
+        <button type="submit">Save product</button>
+      </form>
+    </section>
+    </main>
+  </div>
+  <script>
+    const productImagesInput = document.getElementById('images');
+    const requiredImageCount = Number(productImagesInput.dataset.requiredCount);
+    const validateProductImages = () => {
+      const remaining = Math.max(0, requiredImageCount - productImagesInput.files.length);
+      productImagesInput.setCustomValidity(remaining ? `Select at least ${remaining} more product image(s).` : '');
+    };
+    productImagesInput.addEventListener('change', validateProductImages);
+    productImagesInput.form.addEventListener('submit', (event) => {
+      validateProductImages();
+      if (!productImagesInput.reportValidity()) event.preventDefault();
+    });
+  </script>
+</body>
+</html>

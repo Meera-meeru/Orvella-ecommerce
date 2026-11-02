@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title><%= title %> | Orvella</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="admin-page">
+  <div class="admin-layout">
+    <%- include('sidebar', { active: 'categories' }) %>
+    <main class="admin-content">
+    <p class="admin-breadcrumb"><a href="/admin">Dashboard</a><span aria-hidden="true">/</span><a href="/admin/categories">Categories</a></p>
+    <section class="panel">
+      <h1><%= title %></h1>
+      <% if(error){ %><p class="error" role="alert"><%= error %></p><% } %>
+      <form method="post" action="<%= action %>">
+        <label for="name">Name</label>
+        <input id="name" name="name" value="<%= category.name %>" required maxlength="80">
+        <label for="description">Description</label>
+        <textarea id="description" name="description" rows="4"><%= category.description %></textarea>
+        <label for="offerPercent">Category offer (%)</label>
+        <input id="offerPercent" name="offerPercent" type="number" min="0" max="90" value="<%= category.offerPercent || 0 %>">
+        <div class="form-grid">
+          <div><label for="offerStartsAt">Offer starts</label><input id="offerStartsAt" name="offerStartsAt" type="datetime-local" value="<%= category.offerStartsAt ? new Date(category.offerStartsAt).toISOString().slice(0, 16) : '' %>"></div>
+          <div><label for="offerEndsAt">Offer ends</label><input id="offerEndsAt" name="offerEndsAt" type="datetime-local" value="<%= category.offerEndsAt ? new Date(category.offerEndsAt).toISOString().slice(0, 16) : '' %>"></div>
+        </div>
+        <button type="submit">Save category</button>
+      </form>
+    </section>
+    </main>
+  </div>
+</body>
+</html>

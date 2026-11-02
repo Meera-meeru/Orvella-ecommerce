@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Products | Orvella</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="admin-page">
+  <div class="admin-layout">
+    <%- include('sidebar', { active: 'products' }) %>
+    <main class="admin-content">
+    <header class="admin-page-header"><div><p class="admin-eyebrow">STORE CATALOG</p><h1>Products</h1></div><a class="admin-button" href="/admin/products/new">Add product</a></header>
+    <section class="admin-table-wrap">
+      <table>
+        <thead><tr><th>Images</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
+        <tbody>
+          <% products.forEach(product => { %>
+            <tr>
+              <td>
+                <% if(product.images && product.images.length){ %>
+                  <div class="admin-product-thumbnails">
+                    <% product.images.slice(0,3).forEach((img, index) => { %><img class="admin-product-thumbnail" src="<%= img %>" alt="<%= product.name %> image <%= index + 1 %>" loading="lazy"><% }) %>
+                  </div>
+                <% } else { %><span class="admin-product-no-image">No image</span><% } %>
+              </td>
+              <td><%= product.name %></td>
+              <td><%= product.category ? product.category.name : '—' %></td>
+              <td>₹<%= Number(product.price).toFixed(2) %></td>
+              <td><%= product.stock %></td>
+              <td>
+                <a href="/admin/products/<%= product._id %>/edit">Edit</a>
+                <form class="admin-inline-action" method="post" action="/admin/products/<%= product._id %>/delete" onsubmit="return confirm('Soft-delete this product?')"><button type="submit">Soft delete</button></form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <% if(!products.length){ %><p>No active products yet.</p><% } %>
+    </section>
+    </main>
+  </div>
+</body>
+</html>

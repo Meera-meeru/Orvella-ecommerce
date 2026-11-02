@@ -1,0 +1,18 @@
+<aside class="admin-sidebar">
+  <a class="admin-sidebar-brand" href="/admin/dashboard">Orvella<span>ADMIN</span></a>
+  <p class="admin-sidebar-label">WORKSPACE</p>
+  <nav class="admin-sidebar-nav" aria-label="Admin navigation">
+    <a href="/admin/dashboard" <%= active === 'dashboard' ? 'aria-current="page"' : '' %>><span class="admin-nav-icon">▦</span>Dashboard</a>
+    <a href="/admin/users" <%= active === 'users' ? 'aria-current="page"' : '' %>><span class="admin-nav-icon">♙</span>Users</a>
+    <a href="/admin/categories" <%= active === 'categories' ? 'aria-current="page"' : '' %>><span class="admin-nav-icon">▤</span>Categories</a>
+    <a href="/admin/products" <%= active === 'products' ? 'aria-current="page"' : '' %>><span class="admin-nav-icon">□</span>Products</a>
+    <a href="/admin/orders" <%= active === 'orders' ? 'aria-current="page"' : '' %>><span class="admin-nav-icon">▣</span>Orders</a>
+    <a href="/admin/coupons" <%= active === 'coupons' ? 'aria-current="page"' : '' %>><span class="admin-nav-icon">%</span>Coupons</a>
+    <a href="/admin/offers" <%= active === 'offers' ? 'aria-current="page"' : '' %>><span class="admin-nav-icon">✦</span>Offers</a>
+    <a href="/admin/reports" <%= active === 'reports' ? 'aria-current="page"' : '' %>><span class="admin-nav-icon">▤</span>Sales reports</a>
+  </nav>
+  <div class="admin-sidebar-bottom">
+    <a class="admin-store-link" href="/">View store</a>
+    <form method="post" action="/admin/logout"><button type="submit">Log out</button></form>
+  </div>
+</aside>

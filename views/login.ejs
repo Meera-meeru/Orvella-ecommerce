@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sign in | Orvella</title><link rel="stylesheet" href="/styles.css"></head>
+<body class="auth-page customer-login-page"><main class="auth-card"><p><a class="auth-back" href="/">← Orvella home</a></p><h1>Welcome to Orvella</h1><p>Sign in to shop and manage your profile.</p>
+<% if(error){ %><div class="customer-login-flash" role="alert"><span aria-hidden="true">!</span><p><%= error %></p></div><% } %><% if(message){ %><div class="customer-login-flash customer-login-flash--status" role="status"><span aria-hidden="true">i</span><p><%= message %></p></div><% } %>
+<div id="customer-login-validation" class="customer-login-flash" role="alert" hidden><span aria-hidden="true">!</span><p>Please enter your email and password.</p></div>
+<form action="/login" method="post" novalidate><label for="email">Email address</label><input id="email" name="email" type="email" autocomplete="email"><label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password"><button type="submit">Sign in</button></form>
+<a class="button auth-link-button" href="/auth/google">Continue with Google</a><p class="auth-footer">New to Orvella? <a href="/register">Create an account</a><br><a href="/forgot-password">Forgot your password?</a></p></main>
+<script>
+  (() => {
+    const form = document.querySelector('.customer-login-page form');
+    const email = document.getElementById('email');
+    const password = document.getElementById('password');
+    const validation = document.getElementById('customer-login-validation');
+
+    form.addEventListener('submit', (event) => {
+      if (!email.value.trim() || !password.value || !email.validity.valid) {
+        event.preventDefault();
+        validation.hidden = false;
+        (!email.value.trim() || !email.validity.valid ? email : password).focus();
+      }
+    });
+
+    form.addEventListener('input', () => {
+      validation.hidden = true;
+    });
+  })();
+</script>
+</body></html>

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Create coupon | Orvella</title><link rel="stylesheet" href="/styles.css"></head>
+<body class="admin-page"><div class="admin-layout"><%- include('sidebar', { active: 'coupons' }) %>
+<main class="admin-content">
+  <p class="admin-breadcrumb"><a href="/admin">Dashboard</a> / <a href="/admin/coupons">Coupons</a> / Create</p>
+  <section class="panel"><h1>Create coupon</h1>
+    <% if(error){ %><p role="alert"><%= error %></p><% } %>
+    <form method="post" action="/admin/coupons">
+      <label for="code">Coupon code</label><input id="code" name="code" value="<%= coupon.code || '' %>" maxlength="40" required>
+      <div class="form-grid">
+        <div><label for="discountType">Discount type</label><select id="discountType" name="discountType"><option value="Percent" <%= coupon.discountType==='Percent' ? 'selected' : '' %>>Percentage</option><option value="Fixed" <%= coupon.discountType==='Fixed' ? 'selected' : '' %>>Fixed rupees</option></select></div>
+        <div><label for="value">Discount value</label><input id="value" name="value" type="number" min="0.01" step="0.01" value="<%= coupon.value || '' %>" required></div>
+        <div><label for="maxDiscount">Maximum discount (₹, 0 = no cap)</label><input id="maxDiscount" name="maxDiscount" type="number" min="0" step="0.01" value="<%= coupon.maxDiscount || 0 %>"></div>
+        <div><label for="minimumOrder">Minimum order (₹)</label><input id="minimumOrder" name="minimumOrder" type="number" min="0" step="0.01" value="<%= coupon.minimumOrder || 0 %>"></div>
+        <div><label for="usageLimit">Total uses (0 = unlimited)</label><input id="usageLimit" name="usageLimit" type="number" min="0" step="1" value="<%= coupon.usageLimit || 0 %>"></div>
+        <div><label for="scope">Applies to</label><select id="scope" name="scope"><option value="All">All products</option><option value="Product">Specific product</option><option value="Category">Specific category</option></select></div>
+      </div>
+      <label for="product">Product (when scope is product)</label><select id="product" name="product"><option value="">Select product</option><% products.forEach(product => { %><option value="<%= product._id %>"><%= product.name %></option><% }) %></select>
+      <label for="category">Category (when scope is category)</label><select id="category" name="category"><option value="">Select category</option><% categories.forEach(category => { %><option value="<%= category._id %>"><%= category.name %></option><% }) %></select>
+      <div class="form-grid">
+        <div><label for="startsAt">Starts at (optional)</label><input id="startsAt" name="startsAt" type="datetime-local" value="<%= coupon.startsAt ? new Date(coupon.startsAt).toISOString().slice(0, 16) : '' %>"></div>
+        <div><label for="endsAt">Ends at (optional)</label><input id="endsAt" name="endsAt" type="datetime-local" value="<%= coupon.endsAt ? new Date(coupon.endsAt).toISOString().slice(0, 16) : '' %>"></div>
+      </div>
+      <button type="submit">Save coupon</button>
+    </form>
+  </section>
+</main></div></body></html>

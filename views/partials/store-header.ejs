@@ -1,0 +1,26 @@
+<header class="store-header">
+  <a class="store-brand" href="/" aria-label="Orvella home"><span>Orvella</span><small>Thoughtfully yours</small></a>
+  <nav class="store-nav" aria-label="Main navigation">
+    <a href="/products" <%- currentPath.startsWith('/products') ? 'aria-current="page"' : '' %>><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5v-9Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m4.5 7.8 7.5 4.3 7.5-4.3M12 12v8.5" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><span>Products</span></a>
+    <a href="/categories" <%- currentPath === '/categories' ? 'aria-current="page"' : '' %>><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M4 5.5h7v6H4v-6Zm9 0h7v6h-7v-6Zm-9 9h7v5H4v-5Zm9 0h7v5h-7v-5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg><span>Categories</span></a>
+    <% if(currentUser){ %>
+      <a href="/cart" <%- currentPath === '/cart' || currentPath === '/checkout' ? 'aria-current="page"' : '' %>><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M5 8h14l1 12H4L5 8Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 9V6a3 3 0 0 1 6 0v3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span>Cart</span></a>
+      <a href="/wishlist" <%- currentPath.startsWith('/wishlist') ? 'aria-current="page"' : '' %>><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M20.8 8.8c0 5.1-8.8 10-8.8 10s-8.8-4.9-8.8-10a4.6 4.6 0 0 1 8.8-1.9 4.6 4.6 0 0 1 8.8 1.9Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Wishlist</span></a>
+      <a href="/orders" <%- currentPath.startsWith('/orders') ? 'aria-current="page"' : '' %>><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M7 4.5h10a2 2 0 0 1 2 2v14H5v-14a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 4.5v-1h6v1M8.5 10h7M8.5 14h7M8.5 18h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span>Orders</span></a>
+      <a href="/profile" <%- currentPath.startsWith('/profile') ? 'aria-current="page"' : '' %>><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/><path d="M5 20a7 7 0 0 1 14 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span>Profile</span></a>
+    <% } else if(isAdmin){ %>
+      <a href="/admin" <%- currentPath.startsWith('/admin') ? 'aria-current="page"' : '' %>><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M12 3 20 6v5.5c0 4.8-3.4 7.8-8 9.5-4.6-1.7-8-4.7-8-9.5V6l8-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Admin panel</span></a>
+    <% } else { %>
+      <a href="/login" <%- currentPath === '/login' ? 'aria-current="page"' : '' %>><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/><path d="M5 20a7 7 0 0 1 14 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span>Log in</span></a>
+    <% } %>
+  </nav>
+  <div class="store-header-actions">
+    <% if(currentUser){ %>
+      <form method="post" action="/logout"><button class="store-nav-button store-nav-logout" type="submit"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M10 5H5v14h5M14 8l4 4-4 4m4-4H9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Log out</span></button></form>
+    <% } else if(isAdmin){ %>
+      <form method="post" action="/admin/logout"><button class="store-nav-button store-nav-logout" type="submit"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M10 5H5v14h5M14 8l4 4-4 4m4-4H9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Log out</span></button></form>
+    <% } else { %>
+      <a class="store-nav-cta" href="/register">Create account <span aria-hidden="true">↗</span></a>
+    <% } %>
+  </div>
+</header>

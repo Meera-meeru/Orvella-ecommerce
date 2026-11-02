@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Offers | Orvella</title><link rel="stylesheet" href="/styles.css"></head>
+<body class="admin-page"><div class="admin-layout"><%- include('sidebar', { active: 'offers' }) %>
+<main class="admin-content">
+  <header class="admin-page-header"><div><p class="admin-eyebrow">PROMOTIONS</p><h1>Offers</h1></div><a class="admin-button" href="/admin/offers/new">Create offer</a></header>
+  <section class="admin-table-wrap"><table><thead><tr><th>Name</th><th>Type</th><th>Target / reward</th><th>Offer</th><th>Validity</th><th>Status</th><th></th></tr></thead><tbody>
+    <% offers.forEach(offer => { %><tr><td><%= offer.name %></td><td><%= offer.type %></td><td><%= offer.type==='Product' ? (offer.product?.name || 'Product unavailable') : offer.type==='Category' ? (offer.category?.name || 'Category unavailable') : `₹${offer.rewardAmount} per person` %></td><td><%= offer.type==='Referral' ? 'Referral' : `${offer.discountPercent}% off` %></td><td><%= offer.startsAt ? new Date(offer.startsAt).toLocaleDateString('en-IN') : 'Now' %> – <%= offer.endsAt ? new Date(offer.endsAt).toLocaleDateString('en-IN') : 'No expiry' %></td><td><%= offer.isActive ? 'Active' : 'Paused' %></td><td><form method="post" action="/admin/offers/<%= offer._id %>/toggle"><button type="submit"><%= offer.isActive ? 'Pause' : 'Activate' %></button></form></td></tr><% }) %>
+  </tbody></table><% if(!offers.length){ %><p>No offers created yet.</p><% } %></section>
+</main></div></body></html>

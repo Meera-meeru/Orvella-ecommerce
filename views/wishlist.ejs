@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Orvella | Wishlist</title><link rel="stylesheet" href="/styles.css"></head>
+<body class="store-page customer-page customer-wishlist-page"><%- include('partials/store-header') %>
+<main class="page-shell customer-shell">
+  <p class="page-kicker"><a href="/profile">← Back to your account</a></p>
+  <header class="customer-page-heading"><div><p class="customer-eyebrow">THE THINGS YOU LOVE</p><h1>Your wishlist<span class="customer-title-spark" aria-hidden="true">✦</span></h1><p>A little collection of things worth coming back for.</p></div><span class="customer-count-pill"><span aria-hidden="true">♡</span> <%= wishlist.length %> <%= wishlist.length === 1 ? 'saved find' : 'saved finds' %></span></header>
+  <% if(wishlist.length){ %>
+    <section class="products customer-product-grid" aria-label="Wishlist items">
+      <% wishlist.forEach(product => { %>
+        <article class="product customer-product-card">
+          <a class="customer-product-link" href="/products/<%= product._id %>">
+            <span class="customer-product-image">
+              <% if(product.images && product.images[0]){ %><img src="<%= product.images[0] %>" alt="<%= product.name %>"><% } else { %><span class="customer-image-placeholder">Orvella</span><% } %>
+              <% if(product.discountPercent){ %><span class="customer-product-badge"><%= product.discountPercent %>% off</span><% } %>
+            </span>
+            <span class="customer-product-copy"><span class="customer-product-category"><%= product.category ? product.category.name : 'Orvella finds' %></span><strong class="customer-product-name"><%= product.name %></strong><span class="customer-product-price">₹<%= Number(product.salePrice).toFixed(2) %><% if(product.discountPercent){ %><del>₹<%= Number(product.price).toFixed(2) %></del><% } %></span><span class="customer-stock-note <%= product.stock > 0 ? '' : 'customer-stock-note--out' %>"><span aria-hidden="true">●</span> <%= product.stock > 0 ? 'Ready to ship' : 'Currently sold out' %></span></span>
+          </a>
+          <div class="customer-product-actions">
+            <% if(product.stock > 0){ %><form method="post" action="/cart"><input type="hidden" name="productId" value="<%= product._id %>"><input type="hidden" name="quantity" value="1"><button class="customer-card-primary" type="submit">Add to bag <span aria-hidden="true">→</span></button></form><% } else { %><button class="customer-card-primary" type="button" disabled>Currently unavailable</button><% } %>
+            <form method="post" action="/wishlist/<%= product._id %>/remove"><button class="customer-card-remove" type="submit" aria-label="Remove <%= product.name %> from wishlist">♡<span> Remove</span></button></form>
+          </div>
+        </article>
+      <% }) %>
+    </section>
+  <% } else { %>
+    <section class="customer-empty-state panel"><span class="customer-empty-art" aria-hidden="true">♡</span><p class="customer-eyebrow">SOMETHING LOVELY IS MISSING</p><h2>Your wishlist is waiting.</h2><p>Tap the heart on anything you love and it will be saved right here for later.</p><a class="button" href="/products">Find your next favourite <span aria-hidden="true">→</span></a></section>
+  <% } %>
+</main></body></html>

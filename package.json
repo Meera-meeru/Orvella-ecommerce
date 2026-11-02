@@ -1,0 +1,40 @@
+{
+  "name": "orvella-ecommerce",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Orvella ecommerce demo with OTP registration, customer login, Google SSO, product listing/details, and admin panel",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "seed:categories": "node scripts/seed-categories.js",
+    "seed:catalog": "node scripts/seed-demo-products.js",
+    "create:admin": "node scripts/create-admin.js",
+    "migrate:commerce": "node scripts/migrate-commerce.js",
+    "check": "node scripts/check-project.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "connect-mongo": "^5.1.0",
+    "dotenv": "^18.0.8",
+    "ejs": "^3.1.10",
+    "exceljs": "^4.4.0",
+    "express": "^5.2.1",
+    "express-session": "^1.18.2",
+    "mongoose": "^9.10.2",
+    "multer": "^2.0.2",
+    "nodemailer": "^10.0.11",
+    "pdfkit": "^0.20.2",
+    "razorpay": "^2.9.8",
+    "sharp": "^0.34.4"
+  },
+  "keywords": [
+    "ecommerce",
+    "express",
+    "mongodb",
+    "otp",
+    "google-sso"
+  ],
+  "license": "ISC",
+  "type": "commonjs"
+}

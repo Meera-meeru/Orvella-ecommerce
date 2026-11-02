@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Orvella | <%= product && product.name ? product.name : 'Product' %></title>
+  <link rel="stylesheet" href="/styles.css">
+  <script defer src="/app.js"></script>
+</head>
+<body class="store-page customer-page customer-product-page">
+<%- include('partials/store-header') %>
+<main class="content">
+  <% if(typeof error !== 'undefined' && error){ %>
+    <p class="message" role="alert"><%= error %></p>
+  <% } %>
+  <% if(product){ %>
+  <div class="breadcrumbs"><a href="/">Home</a> / <a href="/products">Products</a> / <a href="/products?category=<%= product.category ? (product.category._id || product.category) : '' %>"><%= product.category && product.category.name ? product.category.name : 'Category' %></a> / <span aria-current="page"><%= product.name %></span></div>
+  <section class="product-layout">
+    <div class="gallery">
+      <div class="main-image-wrap">
+        <% if(product.images && product.images.length){ %>
+          <img id="mainProductImage" class="main-image" src="<%= product.images[0] %>" alt="<%= product.name %>">
+        <% } else { %>
+          <div>No product image</div>
+        <% } %>
+      </div>
+      <div class="thumbs">
+        <% (product.images || []).forEach((image, index) => { %>
+          <img class="thumb <%= index===0 ? 'active' : '' %>" src="<%= image %>" alt="<%= product.name %> image <%= index+1 %>" data-full-image="<%= image %>" onclick="selectProductImage(this)">
+        <% }) %>
+      </div>
+      <p class="muted">Tip: move your pointer over the main image to zoom.</p>
+    </div>
+    <div class="product-info">
+      <p class="category"><%= product.category && product.category.name ? product.category.name : 'Orvella' %></p>
+      <h1><%= product.name %></h1>
+      <% const avgRating = typeof averageRating !== 'undefined' && averageRating ? averageRating : 0; const reviewList = typeof reviews !== 'undefined' ? reviews : []; %>
+      <p class="rating">★ <%= avgRating > 0 ? Number(avgRating).toFixed(1) : 'No rating yet' %> <span class="muted">(<%= reviewList.length %> review(s))</span></p>
+      <% const displayPrice = typeof salePrice !== 'undefined' && salePrice !== null ? salePrice : (product.price || 0); %>
+      <p class="price">₹<%= Number(displayPrice).toFixed(2) %><% if(product.discountPercent && product.discountPercent > 0){ %><span class="old-price">₹<%= Number(product.price || 0).toFixed(2) %></span> <span class="badge"><%= product.discountPercent %>% OFF</span><% } %></p>
+      <p><%= product.description || '' %></p>
+      <p class="stock <%= (product.stock || 0) > 0 ? 'in-stock' : 'sold-out' %>"><%= (product.stock || 0) > 0 ? `${product.stock} item(s) in stock` : 'Sold out — currently unavailable' %></p>
+      <% if(product.couponCode && product.couponPercent && product.couponPercent > 0){ %>
+        <div class="coupon-box">
+          <strong>Extra coupon offer</strong>
+          <p>Use code <code id="couponCode"><%= product.couponCode %></code> for <%= product.couponPercent %>% off the discounted price.</p>
+          <button type="button" class="button" id="applyCoupon" data-price="<%= displayPrice %>" data-coupon-percent="<%= product.couponPercent || 0 %>">Apply coupon</button>
+          <p id="couponResult" aria-live="polite" class="muted"></p>
+        </div>
+      <% } %>
+      <form action="/cart" method="post">
+        <input type="hidden" name="productId" value="<%= product._id %>">
+        <input type="hidden" name="couponCode" id="cartCouponCode" value="">
+        <label for="quantity">Quantity</label>
+        <div class="product-quantity-control">
+          <button class="quantity-stepper" type="button" data-quantity-step="-1" aria-label="Decrease quantity" <%= (product.stock || 0) <= 0 ? 'disabled' : '' %>>−</button>
+          <input class="quantity" id="quantity" name="quantity" type="number" min="<%= (product.stock || 0) > 0 ? 1 : 0 %>" max="<%= product.stock || 0 %>" value="<%= (product.stock || 0) > 0 ? 1 : 0 %>" <%= (product.stock || 0) <= 0 ? 'disabled' : '' %>>
+          <button class="quantity-stepper" type="button" data-quantity-step="1" aria-label="Increase quantity" <%= (product.stock || 0) <= 0 ? 'disabled' : '' %>>+</button>
+        </div>
+        <p><button class="button" type="submit" <%= (product.stock || 0) <= 0 ? 'disabled' : '' %>><%= (product.stock || 0) > 0 ? 'Add to cart' : 'Sold out' %></button> <a href="/wishlist/add/<%= product._id %>">Add to wishlist</a></p>
+      </form>
+    </div>
+  </section>
+  <% if(product.highlights && product.highlights.length){ %>
+    <section class="section">
+      <h2>Product highlights</h2>
+      <ul class="highlights">
+        <% product.highlights.forEach(item => { %>
+          <li><%= item %></li>
+        <% }) %>
+      </ul>
+    </section>
+  <% } %>
+  <% if(product.specifications && product.specifications.length){ %>
+    <section class="section">
+      <h2>Specifications</h2>
+      <table class="specs">
+        <tbody>
+          <% product.specifications.forEach(spec => { %>
+            <tr><td><%= spec.name %></td><td><%= spec.value %></td></tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </section>
+  <% } %>
+  <section class="section" id="reviews">
+    <h2>Customer reviews</h2>
+    <% if(reviewList.length){ %>
+      <% reviewList.forEach(review => { %>
+        <% const ratingVal = Math.max(0, Math.min(5, Math.round(Number(review.rating) || 0))); %>
+        <article class="review">
+          <strong><%= review.name || 'Customer' %></strong>
+          <span class="rating"><%= '★'.repeat(ratingVal) %><%= '☆'.repeat(5 - ratingVal) %></span>
+          <p><%= review.comment %></p>
+          <small class="muted"><%= review.createdAt ? new Date(review.createdAt).toLocaleDateString() : '' %></small>
+        </article>
+      <% }) %>
+    <% } else { %>
+      <p class="muted">No reviews yet. Be the first to review this product.</p>
+    <% } %>
+    <h3>Write a review</h3>
+    <% if(typeof currentUser !== 'undefined' && currentUser){ %>
+      <% if(typeof reviewError !== 'undefined' && reviewError){ %>
+        <p class="message">Please enter a rating and review comment.</p>
+      <% } %>
+      <form class="review-form" method="post" action="/products/<%= product._id %>/reviews">
+        <label for="rating">Your rating</label>
+        <select id="rating" name="rating" required>
+          <option value="">Choose rating</option>
+          <option value="5">5 — Excellent</option>
+          <option value="4">4 — Good</option>
+          <option value="3">3 — Average</option>
+          <option value="2">2 — Poor</option>
+          <option value="1">1 — Bad</option>
+        </select>
+        <label for="comment">Review</label>
+        <textarea id="comment" name="comment" rows="4" maxlength="1000" required placeholder="Share your experience..."></textarea>
+        <button class="button" type="submit">Submit review</button>
+      </form>
+    <% } else { %>
+      <p><a href="/login?message=Please%20log%20in%20to%20write%20a%20review.">Log in</a> to write a review.</p>
+    <% } %>
+  </section>
+  <% const relatedList = typeof relatedProducts !== 'undefined' ? relatedProducts : []; %>
+  <% if(relatedList.length){ %>
+    <section class="section">
+      <h2>Related products</h2>
+      <div class="related">
+        <% relatedList.forEach(item => { %>
+          <a class="related-card" href="/products/<%= item._id %>">
+            <% if(item.images && item.images[0]){ %><img src="<%= item.images[0] %>" alt="<%= item.name %>"><% } %>
+            <div>
+              <strong><%= item.name %></strong>
+              <p>₹<%= Number(typeof item.salePrice !== 'undefined' && item.salePrice !== null ? item.salePrice : (item.price || 0)).toFixed(2) %></p>
+              <span class="rating">★ <%= item.averageRating ? Number(item.averageRating).toFixed(1) : 'New' %></span>
+            </div>
+          </a>
+        <% }) %>
+      </div>
+    </section>
+  <% } %>
+  <% } else { %>
+    <p>Product not found.</p>
+  <% } %>
+</main>
+<footer class="site-footer">© <%= new Date().getFullYear() %> Orvella</footer>
+<script>
+function selectProductImage(el){const main=document.getElementById('mainProductImage');if(!main)return;main.src=el.dataset.fullImage;document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('active'));el.classList.add('active');}
+const mainImageWrap=document.querySelector('.main-image-wrap');const mainProductImage=document.getElementById('mainProductImage');if(mainImageWrap&&mainProductImage){mainImageWrap.addEventListener('mousemove',event=>{const bounds=mainImageWrap.getBoundingClientRect();const x=((event.clientX-bounds.left)/bounds.width)*100;const y=((event.clientY-bounds.top)/bounds.height)*100;mainProductImage.style.transformOrigin=`${x}% ${y}%`;});mainImageWrap.addEventListener('mouseleave',()=>{mainProductImage.style.transformOrigin='center center';});}
+const quantityInput=document.getElementById('quantity');if(quantityInput){const quantityControls=document.querySelectorAll('[data-quantity-step]');const getMin=()=>Number(quantityInput.min)||1;const getMax=()=>{const maxVal=Number(quantityInput.max);return Number.isFinite(maxVal)?maxVal:getMin();};const updateQuantity=(step)=>{const min=getMin();const max=getMax();const current=Number(quantityInput.value);const base=Number.isFinite(current)?current:min;quantityInput.value=String(Math.min(max,Math.max(min,base+step)));quantityInput.dispatchEvent(new Event('change',{bubbles:true}));};quantityControls.forEach(button=>button.addEventListener('click',()=>updateQuantity(Number(button.dataset.quantityStep))));quantityInput.addEventListener('change',()=>{const min=getMin();const max=getMax();const value=Number(quantityInput.value);quantityInput.value=String(Math.min(max,Math.max(min,Number.isFinite(value)?value:min)));});}
+const couponButton=document.getElementById('applyCoupon');if(couponButton){couponButton.addEventListener('click',()=>{const base=Number(couponButton.dataset.price||0);const percent=Number(couponButton.dataset.couponPercent||0);const total=(base*(1-percent/100)).toFixed(2);const couponCodeEl=document.getElementById('couponCode');const cartCouponInput=document.getElementById('cartCouponCode');const couponResultEl=document.getElementById('couponResult');if(couponCodeEl&&cartCouponInput){cartCouponInput.value=couponCodeEl.textContent.trim();}if(couponResultEl){couponResultEl.textContent='Coupon applied. Price after coupon: ₹'+total;}couponButton.textContent='Coupon applied';});}
+</script>
+</body>
+</html>

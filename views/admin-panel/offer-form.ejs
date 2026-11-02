@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Create offer | Orvella</title><link rel="stylesheet" href="/styles.css"></head>
+<body class="admin-page"><div class="admin-layout"><%- include('sidebar', { active: 'offers' }) %>
+<main class="admin-content">
+  <p class="admin-breadcrumb"><a href="/admin">Dashboard</a> / <a href="/admin/offers">Offers</a> / Create</p>
+  <section class="panel"><h1>Create offer</h1>
+    <% if(error){ %><p role="alert"><%= error %></p><% } %>
+    <form method="post" action="/admin/offers">
+      <label for="name">Offer name</label><input id="name" name="name" maxlength="100" required>
+      <label for="type">Offer type</label><select id="type" name="type"><option value="Product">Product offer</option><option value="Category">Category offer</option><option value="Referral">Referral reward</option></select>
+      <label for="product">Product</label><select id="product" name="product"><option value="">Select product</option><% products.forEach(product => { %><option value="<%= product._id %>"><%= product.name %></option><% }) %></select>
+      <label for="category">Category</label><select id="category" name="category"><option value="">Select category</option><% categories.forEach(category => { %><option value="<%= category._id %>"><%= category.name %></option><% }) %></select>
+      <div class="form-grid">
+        <div><label for="discountPercent">Discount (product/category offers, %)</label><input id="discountPercent" name="discountPercent" type="number" min="1" max="90" value="10"></div>
+        <div><label for="rewardAmount">Referral reward per person (₹)</label><input id="rewardAmount" name="rewardAmount" type="number" min="1" step="0.01" value="100"></div>
+        <div><label for="startsAt">Starts at (optional)</label><input id="startsAt" name="startsAt" type="datetime-local"></div>
+        <div><label for="endsAt">Ends at (optional)</label><input id="endsAt" name="endsAt" type="datetime-local"></div>
+      </div>
+      <p class="muted">Referral rewards are credited to both accounts after the referred customer's first successful paid order.</p>
+      <button type="submit">Save offer</button>
+    </form>
+  </section>
+</main></div></body></html>

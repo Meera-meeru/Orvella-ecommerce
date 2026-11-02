@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sales reports | Orvella</title><link rel="stylesheet" href="/styles.css"></head>
+<body class="admin-page"><div class="admin-layout"><%- include('sidebar', { active: 'reports' }) %>
+<main class="admin-content">
+  <header class="admin-page-header"><div><p class="admin-eyebrow">STORE PERFORMANCE</p><h1>Sales report</h1></div></header>
+  <section class="panel">
+    <form method="get" action="/admin/reports" class="form-grid">
+      <div><label for="range">Date range</label><select id="range" name="range"><option value="day" <%= range.preset==='day'?'selected':'' %>>Today</option><option value="week" <%= range.preset==='week'?'selected':'' %>>Last 7 days</option><option value="month" <%= range.preset==='month'?'selected':'' %>>This month</option><option value="year" <%= range.preset==='year'?'selected':'' %>>This year</option><option value="custom" <%= range.preset==='custom'?'selected':'' %>>Custom range</option></select></div>
+      <div><label for="from">From</label><input id="from" name="from" type="date" value="<%= range.fromInput %>"></div>
+      <div><label for="to">To</label><input id="to" name="to" type="date" value="<%= range.toInput %>"></div>
+      <div><label>&nbsp;</label><button type="submit">Apply filters</button></div>
+    </form>
+    <p><a class="admin-button" href="/admin/reports/export.pdf?range=<%= range.preset %>&from=<%= range.fromInput %>&to=<%= range.toInput %>">Download PDF</a> <a class="admin-button" href="/admin/reports/export.xlsx?range=<%= range.preset %>&from=<%= range.fromInput %>&to=<%= range.toInput %>">Download Excel</a></p>
+  </section>
+  <section class="cards">
+    <article class="panel"><h2>Sales count</h2><p><%= totals.orderCount %></p></article>
+    <article class="panel"><h2>Order amount</h2><p>₹<%= totals.orderAmount.toFixed(2) %></p></article>
+    <article class="panel"><h2>Total discounts</h2><p>₹<%= totals.discount.toFixed(2) %></p></article>
+    <article class="panel"><h2>Coupon deduction</h2><p>₹<%= totals.couponDiscount.toFixed(2) %></p></article>
+  </section>
+  <section class="admin-table-wrap"><table><thead><tr><th>Order</th><th>Date</th><th>Customer</th><th>Payment</th><th>Status</th><th>Discount</th><th>Coupon deduction</th><th>Total</th></tr></thead><tbody>
+    <% orders.forEach(order => { %><tr><td><%= order.orderNumber %></td><td><%= new Date(order.createdAt).toLocaleDateString('en-IN') %></td><td><%= order.user?.email || 'Unavailable' %></td><td><%= order.paymentMethod %></td><td><%= order.status %></td><td>₹<%= Number(order.discount || 0).toFixed(2) %></td><td>₹<%= Number(order.couponDiscount || 0).toFixed(2) %></td><td>₹<%= order.total.toFixed(2) %></td></tr><% }) %>
+  </tbody></table><% if(!orders.length){ %><p>No paid orders for this date range.</p><% } %></section>
+</main></div></body></html>

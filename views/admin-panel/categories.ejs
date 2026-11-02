@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Categories | Orvella</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="admin-page">
+  <div class="admin-layout">
+    <%- include('sidebar', { active: 'categories' }) %>
+    <main class="admin-content">
+    <header class="admin-page-header"><div><p class="admin-eyebrow">STORE CATALOG</p><h1>Categories</h1></div><a class="admin-button" href="/admin/categories/new">Add category</a></header>
+    <% if(error){ %><p role="alert"><%= error %></p><% } %>
+    <section class="admin-table-wrap">
+      <table>
+        <thead><tr><th>Name</th><th>Description</th><th>Category offer</th><th>Actions</th></tr></thead>
+        <tbody>
+          <% categories.forEach(category => { %>
+            <tr>
+              <td><%= category.name %></td>
+              <td><%= category.description %></td>
+              <td><%= category.offerPercent || 0 %>%</td>
+              <td>
+                <a href="/admin/categories/<%= category._id %>/edit">Edit</a>
+                <form class="admin-inline-action" method="post" action="/admin/categories/<%= category._id %>/delete" onsubmit="return confirm('Soft-delete this category?')"><button type="submit">Soft delete</button></form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <% if(!categories.length){ %><p>No active categories yet.</p><% } %>
+    </section>
+    </main>
+  </div>
+</body>
+</html>

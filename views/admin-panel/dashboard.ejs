@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin dashboard | Orvella</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="admin-page">
+  <div class="admin-layout">
+    <%- include('sidebar', { active: 'dashboard' }) %>
+    <main class="admin-content">
+    <header class="admin-page-header">
+      <div><p class="admin-eyebrow">STORE OVERVIEW</p><h1>Admin dashboard</h1></div>
+    </header>
+    <section class="cards">
+      <article class="panel"><h2>Paid sales</h2><p>₹<%= Number(sales.amount).toFixed(2) %></p><span><%= sales.count %> completed payments</span></article>
+      <article class="panel"><h2>Discounts given</h2><p>₹<%= Number(sales.discount).toFixed(2) %></p><a href="/admin/reports">View sales report</a></article>
+      <article class="panel"><h2>Orders</h2><p><%= orders %></p><a href="/admin/orders">Manage orders</a></article>
+      <article class="panel"><h2>Products</h2><p><%= products %></p><a href="/admin/products">Manage products</a></article>
+      <article class="panel"><h2>Users</h2><p><%= users %></p><a href="/admin/users">Manage users</a></article>
+      <article class="panel"><h2>Categories</h2><p><%= categories %></p><a href="/admin/categories">Manage categories</a></article>
+    </section>
+    <section class="panel admin-sales-chart">
+      <header class="admin-page-header"><div><p class="admin-eyebrow">REVENUE OVER TIME</p><h2>Monthly sales</h2></div>
+        <form method="get" action="/admin/dashboard"><label for="dashboard-year">Year</label><input id="dashboard-year" name="year" type="number" min="2000" max="2100" value="<%= year %>"><button type="submit">View</button></form>
+      </header>
+      <div class="admin-chart-bars" role="img" aria-label="Monthly paid sales for <%= year %>">
+        <% const maxMonthlySales = Math.max(1, ...analytics.monthRows.map(row => row.amount)); %>
+        <% analytics.monthRows.forEach(row => { %>
+          <div class="admin-chart-column"><span class="admin-chart-value">₹<%= row.amount.toFixed(0) %></span><span class="admin-chart-bar" style="--bar-height:<%= Math.max(row.amount ? 8 : 2, Math.round(row.amount / maxMonthlySales * 100)) %>%"></span><span class="admin-chart-month"><%= row.month %></span></div>
+        <% }) %>
+      </div>
+    </section>
+    <section class="admin-top-sellers">
+      <article class="panel"><h2>Best-selling products</h2><ol><% analytics.bestProducts.forEach(item => { %><li><span><%= item.name %></span><strong><%= item.quantity %> sold</strong></li><% }) %></ol><% if(!analytics.bestProducts.length){ %><p>No paid sales yet.</p><% } %></article>
+      <article class="panel"><h2>Best-selling categories</h2><ol><% analytics.bestCategories.forEach(item => { %><li><span><%= item.name %></span><strong><%= item.quantity %> sold</strong></li><% }) %></ol><% if(!analytics.bestCategories.length){ %><p>No paid sales yet.</p><% } %></article>
+      <article class="panel"><h2>Best-selling brands</h2><ol><% analytics.bestBrands.forEach(item => { %><li><span><%= item.name %></span><strong><%= item.quantity %> sold</strong></li><% }) %></ol><% if(!analytics.bestBrands.length){ %><p>Add product brands to report brand leaders.</p><% } %></article>
+    </section>
+    <section class="panel admin-quick-links"><a href="/admin/coupons">Manage coupons</a><a href="/admin/offers">Manage offers</a><a href="/admin/reports">Generate sales reports</a></section>
+    </main>
+  </div>
+</body>
+</html>

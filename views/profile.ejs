@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Orvella | My profile</title><link rel="stylesheet" href="/styles.css"></head>
+<body class="store-page customer-page customer-profile-page"><%- include('partials/store-header') %>
+<main class="page-shell customer-shell">
+  <p class="page-kicker"><a href="/">← Continue shopping</a></p>
+  <header class="customer-page-heading"><div><p class="customer-eyebrow">YOUR ORVELLA SPACE</p><h1>My account</h1><p>All your favourites and order updates, together in one place.</p></div><a class="button customer-heading-action" href="/profile/edit">Edit profile <span aria-hidden="true">↗</span></a></header>
+  <% if(success){ %><p class="customer-notice" role="status"><span aria-hidden="true">✓</span> Your profile was updated successfully.</p><% } %>
+  <section class="customer-profile-card panel">
+    <div class="customer-avatar" aria-hidden="true"><% if(profileUser.profileImage){ %><img src="<%= profileUser.profileImage %>" alt=""><% } else { %><span><%= profileUser.name ? profileUser.name.charAt(0).toUpperCase() : 'O' %></span><% } %></div>
+    <div class="customer-profile-copy"><p class="customer-eyebrow">YOUR PROFILE</p><h2><%= profileUser.name %></h2><p><%= profileUser.email %></p><span class="customer-member-since">Orvella member since <%= new Date(profileUser.createdAt).toLocaleDateString('en', { month: 'long', year: 'numeric' }) %></span></div>
+    <a class="customer-profile-edit" href="/profile/edit" aria-label="Edit your profile">Edit details <span aria-hidden="true">↗</span></a>
+  </section>
+  <section class="customer-stats" aria-label="Your activity">
+    <article class="customer-stat-card"><span class="customer-stat-icon" aria-hidden="true">▤</span><span class="customer-stat-label">ORDERS PLACED</span><strong><%= stats.orders %></strong><a href="/orders">Track your orders <span aria-hidden="true">→</span></a></article>
+    <article class="customer-stat-card"><span class="customer-stat-icon" aria-hidden="true">♡</span><span class="customer-stat-label">SAVED FINDS</span><strong><%= stats.wishlist %></strong><a href="/wishlist">Visit your wishlist <span aria-hidden="true">→</span></a></article>
+    <article class="customer-stat-card"><span class="customer-stat-icon" aria-hidden="true">₹</span><span class="customer-stat-label">WALLET BALANCE</span><strong>₹<%= Number(profileUser.walletBalance || 0).toFixed(2) %></strong><a href="/wallet">View wallet <span aria-hidden="true">→</span></a></article>
+  </section>
+  <section class="customer-account-grid">
+    <a class="customer-action-card" href="/orders"><span class="customer-action-icon" aria-hidden="true">↗</span><span><strong>Order history</strong><small>Follow every order from here.</small></span><span class="customer-action-arrow" aria-hidden="true">→</span></a>
+    <a class="customer-action-card" href="/wishlist"><span class="customer-action-icon customer-action-icon--rose" aria-hidden="true">♡</span><span><strong>Your wishlist</strong><small>Keep lovely things close.</small></span><span class="customer-action-arrow" aria-hidden="true">→</span></a>
+    <a class="customer-action-card" href="/cart"><span class="customer-action-icon customer-action-icon--gold" aria-hidden="true">▢</span><span><strong>Shopping bag</strong><small>Pick up where you left off.</small></span><span class="customer-action-arrow" aria-hidden="true">→</span></a>
+    <a class="customer-action-card" href="/wallet"><span class="customer-action-icon customer-action-icon--gold" aria-hidden="true">₹</span><span><strong>Your wallet</strong><small>Balance, rewards, and refunds.</small></span><span class="customer-action-arrow" aria-hidden="true">→</span></a>
+  </section>
+  <% if(profileUser.addresses.length){ %>
+    <section class="customer-address-panel panel">
+      <div class="customer-section-heading"><div><p class="customer-eyebrow">READY WHEN YOU ARE</p><h2>Saved addresses</h2></div><a href="/profile/addresses">Manage addresses <span aria-hidden="true">→</span></a></div>
+      <div class="customer-address-list"><% profileUser.addresses.forEach(address => { %>
+        <article class="customer-address-card"><span class="customer-address-icon" aria-hidden="true">⌖</span><div><strong><%= address.label %></strong><% if(address.isDefault){ %><span class="customer-default-badge">Default</span><% } %><p><%= address.name %> · <%= address.phone %><br><%= address.addressLine1 %><%= address.addressLine2 ? ', ' + address.addressLine2 : '' %><br><%= address.city %>, <%= address.state %> <%= address.postalCode %>, <%= address.country %></p></div></article>
+      <% }) %></div>
+    </section>
+  <% } else { %>
+    <section class="customer-address-prompt"><span class="customer-address-icon" aria-hidden="true">⌖</span><div><strong>Add your delivery address</strong><p>Save your details to make checkout quicker next time.</p></div><a href="/profile/addresses">Add address <span aria-hidden="true">→</span></a></section>
+  <% } %>
+</main></body></html>

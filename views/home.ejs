@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Orvella | Home</title>
+  <link rel="stylesheet" href="/styles.css">
+  <% if(typeof showBrandIntro !== 'undefined' && showBrandIntro){ %>
+    <script>
+      try {
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && !window.sessionStorage.getItem('orvella-intro-seen')) {
+          window.sessionStorage.setItem('orvella-intro-seen', '1');
+          document.documentElement.classList.add('orvella-intro-active');
+        }
+      } catch (error) {
+        // If session storage is unavailable, keep the home page immediately accessible.
+      }
+    </script>
+  <% } %>
+  <script defer src="/app.js"></script>
+</head>
+<body class="store-page home-page">
+  <% if(typeof showBrandIntro !== 'undefined' && showBrandIntro){ %>
+    <div class="brand-intro" role="dialog" aria-modal="true" aria-label="Orvella introduction">
+      <div class="brand-intro-glow" aria-hidden="true"></div>
+      <svg class="brand-intro-botanical" viewBox="0 0 900 420" fill="none" aria-hidden="true">
+        <path class="brand-intro-stem" d="M113 332C177 293 169 237 207 197C244 158 287 151 344 155M787 332C723 293 731 237 693 197C656 158 613 151 556 155"/>
+        <path class="brand-intro-sprig" d="M159 287C127 269 117 247 119 221M188 235C219 217 230 194 226 170M237 185C208 164 202 145 208 127M741 287C773 269 783 247 781 221M712 235C681 217 670 194 674 170M663 185C692 164 698 145 692 127"/>
+        <g transform="translate(119 221) rotate(-45)"><path class="brand-intro-leaf" d="M0 0C-27-4-37-22-37-42C-16-42 1-30 0 0Z"/><path class="brand-intro-vein" d="M-1-2C-8-11-19-25-32-37"/></g>
+        <g transform="translate(131 262) rotate(-137)"><path class="brand-intro-leaf" d="M0 0C-25-4-36-20-36-40C-15-40 1-28 0 0Z"/><path class="brand-intro-vein" d="M-1-2C-8-11-19-25-31-35"/></g>
+        <g transform="translate(188 235) rotate(31)"><path class="brand-intro-leaf" d="M0 0C-26-4-37-21-37-41C-16-41 1-29 0 0Z"/><path class="brand-intro-vein" d="M-1-2C-8-11-19-25-32-36"/></g>
+        <g transform="translate(226 170) rotate(-35)"><path class="brand-intro-leaf" d="M0 0C-25-4-35-20-35-39C-15-39 1-27 0 0Z"/><path class="brand-intro-vein" d="M-1-2C-8-10-18-23-30-34"/></g>
+        <g transform="translate(208 127) rotate(-142)"><path class="brand-intro-leaf" d="M0 0C-24-4-34-19-34-38C-14-38 1-26 0 0Z"/><path class="brand-intro-vein" d="M-1-2C-8-10-17-22-29-33"/></g>
+        <g transform="translate(159 287) rotate(20)"><path class="brand-intro-leaf brand-intro-leaf-light" d="M0 0C-22-4-31-18-31-35C-13-35 1-24 0 0Z"/><path class="brand-intro-vein" d="M-1-2C-7-9-15-20-27-30"/></g>
+        <g transform="translate(781 221) rotate(225)"><path class="brand-intro-leaf" d="M0 0C-27-4-37-22-37-42C-16-42 1-30 0 0Z"/><path class="brand-intro-vein" d="M-1-2C-8-11-19-25-32-37"/></g>
+        <g transform="translate(769 262) rotate(317)"><path class="brand-intro-leaf" d="M0 0C-25-4-36-20-36-40C-15-40 1-28 0 0Z"/><path class="brand-intro-vein" d="M-1-2C-8-11-19-25-31-35"/></g>
+        <g transform="translate(712 235) rotate(149)"><path class="brand-intro-leaf" d="M0 0C-26-4-37-21-37-41C-16-41 1-29 0 0Z"/><path class="brand-intro-vein" d="M-1-2C-8-11-19-25-32-36"/></g>
+        <g transform="translate(674 170) rotate(215)"><path class="brand-intro-leaf" d="M0 0C-25-4-35-20-35-39C-15-39 1-27 0 0Z"/><path class="brand-intro-vein" d="M-1-2C-8-10-18-23-30-34"/></g>
+        <g transform="translate(692 127) rotate(322)"><path class="brand-intro-leaf" d="M0 0C-24-4-34-19-34-38C-14-38 1-26 0 0Z"/><path class="brand-intro-vein" d="M-1-2C-8-10-17-22-29-33"/></g>
+        <g transform="translate(741 287) rotate(160)"><path class="brand-intro-leaf brand-intro-leaf-light" d="M0 0C-22-4-31-18-31-35C-13-35 1-24 0 0Z"/><path class="brand-intro-vein" d="M-1-2C-7-9-15-20-27-30"/></g>
+        <circle class="brand-intro-firefly" cx="298" cy="251" r="2"/>
+        <circle class="brand-intro-firefly" cx="602" cy="251" r="2"/>
+        <circle class="brand-intro-firefly" cx="280" cy="111" r="1.6"/>
+        <circle class="brand-intro-firefly" cx="620" cy="111" r="1.6"/>
+      </svg>
+      <div class="brand-intro-content">
+        <p class="brand-intro-eyebrow">THOUGHTFUL FINDS FOR EVERYDAY LIVING</p>
+        <h1 class="brand-intro-word" aria-label="Orvella"><span aria-hidden="true">O</span><span aria-hidden="true">r</span><span aria-hidden="true">v</span><span aria-hidden="true">e</span><span aria-hidden="true">l</span><span aria-hidden="true">l</span><span aria-hidden="true">a</span></h1>
+        <span class="brand-intro-rule" aria-hidden="true"></span>
+        <p class="brand-intro-tagline">Thoughtfully yours</p>
+      </div>
+      <button class="brand-intro-skip" type="button">Skip intro <span aria-hidden="true">→</span></button>
+    </div>
+  <% } %>
+  <%- include('partials/store-header') %>
+
+  <section class="home-hero">
+    <div class="home-hero-copy">
+      <p class="home-eyebrow"><span></span> EVERYDAY GOODS, THOUGHTFULLY FOUND</p>
+      <h1>Good things for <em>everyday living.</em></h1>
+      <p class="home-hero-description">Discover useful, beautifully considered pieces for your home, work, and everything in between.</p>
+      <div class="home-hero-actions">
+        <a class="button" href="#products">Explore the collection <span aria-hidden="true">→</span></a>
+        <a class="home-text-link" href="/categories">Browse categories</a>
+      </div>
+      <div class="home-proof">
+        <span><strong><%= products.length %>+</strong> thoughtful finds</span>
+        <span aria-hidden="true">·</span>
+        <span><strong><%= categories.length %></strong> curated categories</span>
+      </div>
+    </div>
+    <aside class="home-featured" aria-label="Featured product">
+      <div class="home-featured-orbit"></div>
+      <% if(products.length){ const featuredProduct = products[0]; %>
+        <a class="home-featured-card" href="/products/<%= featuredProduct._id %>">
+          <span class="home-featured-label">A GOOD PLACE TO START</span>
+          <% if(featuredProduct.images && featuredProduct.images[0]){ %>
+            <img src="<%= featuredProduct.images[0] %>" alt="<%= featuredProduct.name %>">
+          <% } else { %>
+            <span class="home-featured-placeholder">Orvella</span>
+          <% } %>
+          <span class="home-featured-caption">
+            <span><small>FEATURED FIND</small><strong><%= featuredProduct.name %></strong></span>
+            <span class="home-featured-price">₹<%= Number(featuredProduct.salePrice).toFixed(2) %><span aria-hidden="true">↗</span></span>
+          </span>
+        </a>
+        <span class="home-sticker" aria-hidden="true">Made for<br>your day</span>
+      <% } else { %>
+        <div class="home-featured-card home-featured-empty">
+          <span class="home-featured-label">THE Orvella EDIT</span>
+          <span class="home-featured-placeholder">Good things<br>are coming.</span>
+        </div>
+      <% } %>
+    </aside>
+  </section>
+
+  <main class="content home-content" id="products">
+    <section class="home-products-section">
+      <div class="home-section-heading home-products-heading">
+        <div>
+          <p class="home-eyebrow"><%= query || categoryId ? 'YOUR SEARCH, YOUR FINDS' : 'MADE TO BE USED AND LOVED' %></p>
+          <h2><%= query || categoryId ? 'Search results' : 'The Orvella collection' %></h2>
+        </div>
+        <span class="home-result-count"><%= products.length %> <%= products.length === 1 ? 'item' : 'items' %></span>
+      </div>
+
+      <form class="filters home-filters" method="get" action="/products">
+        <label class="home-search-field">
+          <span class="home-search-icon" aria-hidden="true"></span>
+          <input name="q" value="<%= query %>" placeholder="Search the collection..." aria-label="Search products">
+        </label>
+        <select name="category" aria-label="Filter by category">
+          <option value="">All categories</option>
+          <% categories.forEach(c => { %><option value="<%= c._id %>" <%= String(categoryId)===String(c._id) ? 'selected' : '' %>><%= c.name %></option><% }) %>
+        </select>
+        <select name="sort" aria-label="Sort products">
+          <option value="newest" <%= sortBy==='newest' ? 'selected' : '' %>>New arrivals</option>
+          <option value="popularity" <%= sortBy==='popularity' ? 'selected' : '' %>>Popularity</option>
+          <option value="price-low" <%= sortBy==='price-low' ? 'selected' : '' %>>Price: low to high</option>
+          <option value="price-high" <%= sortBy==='price-high' ? 'selected' : '' %>>Price: high to low</option>
+          <option value="rating" <%= sortBy==='rating' ? 'selected' : '' %>>Average ratings</option>
+          <option value="featured" <%= sortBy==='featured' ? 'selected' : '' %>>Featured</option>
+          <option value="name-asc" <%= sortBy==='name-asc' ? 'selected' : '' %>>A - Z</option>
+          <option value="name-desc" <%= sortBy==='name-desc' ? 'selected' : '' %>>Z - A</option>
+        </select>
+        <select name="stock" aria-label="Stock availability">
+          <option value="" <%= !stockFilter ? 'selected' : '' %>>All stock statuses</option>
+          <option value="available" <%= stockFilter==='available' ? 'selected' : '' %>>In stock</option>
+          <option value="unavailable" <%= stockFilter==='unavailable' ? 'selected' : '' %>>Out of stock</option>
+        </select>
+        <button class="button" type="submit">Search</button>
+      </form>
+
+      <% if(products.length){ %>
+        <div class="products home-products">
+          <% products.forEach(product => { %>
+            <article class="product home-product">
+              <a href="/products/<%= product._id %>">
+                <span class="home-product-image">
+                  <% if(product.images && product.images[0]){ %>
+                    <% if(product.images.length > 1){ %>
+                      <span class="product-card-gallery">
+                        <img class="product-card-gallery-main" src="<%= product.images[0] %>" alt="<%= product.name %>">
+                        <% product.images.slice(1, 3).forEach((image, index) => { %>
+                          <span class="product-card-gallery-secondary <%= product.images.length === 2 ? 'product-card-gallery-secondary-single' : '' %>">
+                            <img src="<%= image %>" alt="<%= product.name %> image <%= index + 2 %>">
+                            <% if(index === 1 && product.images.length > 3){ %><span class="product-card-gallery-more">+<%= product.images.length - 3 %></span><% } %>
+                          </span>
+                        <% }) %>
+                      </span>
+                    <% } else { %>
+                      <img src="<%= product.images[0] %>" alt="<%= product.name %>">
+                    <% } %>
+                  <% } else { %><span class="placeholder">No image yet</span><% } %>
+                  <% if(product.discountPercent){ %><span class="home-product-badge"><%= product.discountPercent %>% off</span><% } %>
+                </span>
+                <div class="product-body">
+                  <p class="category"><%= product.category ? product.category.name : 'Orvella' %></p>
+                  <h3><%= product.name %></h3>
+                  <p class="rating">★ <%= product.averageRating ? product.averageRating.toFixed(1) : 'New' %> <span class="muted">(<%= (product.reviews || []).length %>)</span></p>
+                  <div class="home-product-bottom">
+                    <p class="price">₹<%= Number(product.salePrice).toFixed(2) %><% if(product.discountPercent){ %> <span class="old-price">₹<%= Number(product.price).toFixed(2) %></span><% } %></p>
+                    <span class="home-product-link" aria-hidden="true">↗</span>
+                  </div>
+                  <p class="muted home-stock"><%= product.stock > 0 ? `${product.stock} in stock` : 'Sold out' %></p>
+                </div>
+              </a>
+            </article>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <div class="empty home-empty">
+          <span class="home-empty-icon" aria-hidden="true">⌕</span>
+          <h3>No products found</h3>
+          <p>Try another search or category, or browse the full collection.</p>
+          <a class="button" href="/products">View all products</a>
+        </div>
+      <% } %>
+    </section>
+  </main>
+
+  <footer class="home-footer"><span class="store-brand">Orvella</span><span>Thoughtful finds for everyday living.</span><span>© <%= new Date().getFullYear() %> Orvella</span></footer>
+</body>
+</html>

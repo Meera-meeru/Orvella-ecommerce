@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Orvella | Checkout</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="store-page customer-page customer-checkout-page">
+  <%- include('partials/store-header') %>
+  <main class="page-shell">
+    <% const codAvailable = total <= 1000; %>
+    <% const walletAvailable = Number(walletBalance) >= total; %>
+    <% const razorpayAvailable = Boolean(razorpayKeyId); %>
+    <% const hasPaymentOption = codAvailable || walletAvailable || razorpayAvailable; %>
+    <p class="page-kicker"><a href="/cart">← Back to your bag</a></p>
+    <header class="customer-page-heading"><div><p class="customer-eyebrow">THE GOOD THINGS ARE ALMOST YOURS</p><h1>Checkout</h1><p>Choose where to send your Orvella finds.</p></div><span class="customer-checkout-secure"><span aria-hidden="true">✓</span> Safe &amp; secure</span></header>
+    <% if(error){ %><p role="alert"><%= error %></p><% } %>
+    <% if(addresses.length){ %>
+      <form method="post" action="/checkout" class="checkout-layout">
+        <section class="panel checkout-addresses">
+          <h2>Delivery address</h2>
+          <% addresses.forEach(address => { %>
+            <label class="address-choice">
+              <input type="radio" name="addressId" value="<%= address._id %>" <%= address.isDefault ? 'checked' : '' %> required>
+              <span><strong><%= address.label %></strong><br><%= address.name %> · <%= address.phone %><br><%= address.addressLine1 %><%= address.addressLine2 ? ', ' + address.addressLine2 : '' %>, <%= address.city %>, <%= address.state %> <%= address.postalCode %>, <%= address.country %></span>
+            </label>
+          <% }) %>
+          <a href="/profile/addresses">Add or edit saved addresses</a>
+        </section>
+        <aside class="panel checkout-summary">
+          <p class="customer-eyebrow">JUST ONE MORE STEP</p><h2>Order summary</h2>
+          <div class="checkout-line-items">
+            <% items.forEach(item => { %><p><span><%= item.product.name %> × <%= item.quantity %></span><strong>₹<%= item.lineTotal.toFixed(2) %></strong></p><% }) %>
+          </div>
+          <p><span>Subtotal</span><strong>₹<%= subtotal.toFixed(2) %></strong></p>
+          <% if(coupon){ %><p><span>Coupon <%= coupon.code %></span><strong>−₹<%= discount.toFixed(2) %></strong></p><% } %>
+          <p><span>Shipping</span><strong>₹<%= shipping.toFixed(2) %></strong></p>
+          <p class="checkout-total"><span>Total</span><strong>₹<%= total.toFixed(2) %></strong></p>
+          <p class="payment-note">COD is available for orders up to ₹1,000. Delivery charges: ₹0.00.</p>
+          <fieldset class="checkout-payment-options">
+            <legend>Choose payment method</legend>
+            <label class="checkout-payment-option <%= codAvailable ? '' : 'is-disabled' %>">
+              <input type="radio" name="paymentMethod" value="COD" <%= codAvailable ? 'checked' : 'disabled' %>>
+              <span class="checkout-payment-copy"><strong>Cash on Delivery</strong><small><%= codAvailable ? 'Pay when your order arrives' : 'Available for orders up to ₹1,000' %></small></span>
+              <span class="checkout-payment-mark" aria-hidden="true"></span>
+            </label>
+            <label class="checkout-payment-option <%= razorpayAvailable ? '' : 'is-disabled' %>">
+              <input type="radio" name="paymentMethod" value="Razorpay" <%= razorpayAvailable ? (codAvailable ? '' : 'checked') : 'disabled' %>>
+              <span class="checkout-payment-copy"><strong>Pay online</strong><small><%= razorpayAvailable ? 'Secure payment with Razorpay' : 'Online payments are not set up yet' %></small></span>
+              <span class="checkout-payment-mark" aria-hidden="true"></span>
+            </label>
+            <label class="checkout-payment-option <%= walletAvailable ? '' : 'is-disabled' %>">
+              <input type="radio" name="paymentMethod" value="Wallet" <%= walletAvailable ? (!codAvailable && !razorpayAvailable ? 'checked' : '') : 'disabled' %>>
+              <span class="checkout-payment-copy"><strong>Orvella Wallet</strong><small>₹<%= Number(walletBalance).toFixed(2) %> available<%= walletAvailable ? '' : ` · ₹${Math.max(0, total - Number(walletBalance)).toFixed(2)} more needed` %></small></span>
+              <span class="checkout-payment-mark" aria-hidden="true"></span>
+            </label>
+          </fieldset>
+          <% if(!hasPaymentOption){ %>
+            <p class="checkout-payment-unavailable" role="status">No payment method is available for this order right now. Online payment needs to be set up, your wallet balance is too low, and Cash on Delivery is limited to orders up to ₹1,000.</p>
+          <% } %>
+          <% if(!razorpayAvailable){ %><p class="checkout-payment-setup">Online payment setup is required before Razorpay can be selected.</p><% } %>
+          <button type="submit" <%= hasPaymentOption ? '' : 'disabled' %>><%= hasPaymentOption ? 'Place order' : 'Payment unavailable' %></button>
+        </aside>
+      </form>
+    <% } else { %>
+      <section class="panel empty-state">
+        <h2>Add a delivery address to continue</h2>
+        <p>Save your delivery details before placing your order.</p>
+        <a class="button" href="/profile/addresses">Add address</a>
+      </section>
+    <% } %>
+  </main>
+</body>
+</html>

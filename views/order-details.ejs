@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Orvella | Order <%= order.orderNumber %></title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="store-page customer-page customer-order-details-page">
+  <%- include('partials/store-header') %>
+  <main class="page-shell">
+    <p class="page-kicker customer-order-back"><a href="/orders">← Back to your orders</a></p>
+    <% if(placed){ %><p class="customer-order-notice" role="status">Your order was placed successfully.</p><% } %>
+    <% if(paymentMessage==='success'){ %><p class="customer-order-notice" role="status">Your payment was verified successfully.</p><% } %>
+    <% if(paymentMessage==='return-expired'){ %><p class="customer-order-notice is-warning" role="alert">The 7-day return window for this order has ended.</p><% } %>
+    <% if(paymentMessage && paymentMessage!=='success' && paymentMessage!=='return-expired'){ %><p class="customer-order-notice is-warning" role="alert"><%= paymentMessage %></p><% } %>
+    <%
+      const orderSteps = ['Placed', 'Processing', 'Shipped', 'Delivered'];
+      const orderStep = orderSteps.indexOf(order.status);
+      const activeOrder = orderStep !== -1;
+    %>
+    <header class="customer-order-hero">
+      <div class="customer-order-hero-copy">
+        <p class="customer-eyebrow">ORDER DETAILS</p>
+        <h1><%= order.status === 'Delivered' ? 'Your order has arrived.' : order.status === 'Cancelled' ? 'Order cancelled' : order.status === 'Payment Pending' ? 'Complete your payment' : 'Your order is in good hands.' %></h1>
+        <div class="customer-order-meta">
+          <span>Order <strong><%= order.orderNumber %></strong></span>
+          <span>Placed <%= new Date(order.createdAt).toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' }) %></span>
+          <span><%= order.paymentMethod %> · <%= order.paymentStatus %></span>
+        </div>
+      </div>
+      <span class="customer-order-status status-<%= order.status.toLowerCase().replace(/\s+/g, '-') %>"><span aria-hidden="true"></span><%= order.status %></span>
+      <% if(activeOrder){ %>
+        <ol class="customer-order-progress" aria-label="Order progress">
+          <% orderSteps.forEach((step, index) => { %>
+            <li class="<%= index <= orderStep ? 'is-complete' : '' %> <%= index === orderStep ? 'is-current' : '' %>"><span><%= index < orderStep ? '✓' : index + 1 %></span><strong><%= step %></strong></li>
+          <% }) %>
+        </ol>
+      <% } %>
+    </header>
+    <div class="order-detail-grid">
+      <section class="panel order-items">
+        <div class="customer-order-section-heading"><div><p class="customer-eyebrow">IN YOUR ORDER</p><h2>Your items</h2></div><span><%= order.items.length %> <%= order.items.length === 1 ? 'item' : 'items' %></span></div>
+        <% if(order.paymentFailure){ %><p class="customer-order-notice is-warning" role="alert"><%= order.paymentFailure %></p><% } %>
+        <% order.items.forEach(item => { %>
+          <article class="cart-row">
+            <img src="<%= item.image %>" alt="<%= item.name %>" width="80" height="80">
+            <div><strong><%= item.name %></strong><span class="customer-order-item-quantity">Quantity: <%= item.quantity %></span><% if(item.couponCode){ %><p class="muted">Coupon <%= item.couponCode %> applied</p><% } %></div>
+            <strong class="customer-order-item-price">₹<%= (item.unitPrice * item.quantity).toFixed(2) %></strong>
+          </article>
+        <% }) %>
+      </section>
+      <div class="customer-order-side-stack">
+        <section class="panel customer-order-summary">
+          <p class="customer-eyebrow">PAYMENT SUMMARY</p><h2>Order total</h2>
+        <div class="order-totals">
+          <p><span>Subtotal</span><strong>₹<%= order.subtotal.toFixed(2) %></strong></p>
+          <% if(order.discount){ %><p><span>Discount <%= order.couponCode ? '(' + order.couponCode + ')' : '' %></span><strong>−₹<%= order.discount.toFixed(2) %></strong></p><% } %>
+          <p><span>Shipping</span><strong>₹<%= order.shipping.toFixed(2) %></strong></p>
+          <p class="order-grand-total"><span>Total</span><strong>₹<%= order.total.toFixed(2) %></strong></p>
+        </div>
+        </section>
+        <aside class="panel order-address">
+          <p class="customer-eyebrow">DELIVERY ADDRESS</p><h2>Shipping to</h2>
+          <p><strong><%= order.address.name %></strong><span><%= order.address.phone %></span><br><%= order.address.addressLine1 %><%= order.address.addressLine2 ? ', ' + order.address.addressLine2 : '' %><br><%= order.address.city %>, <%= order.address.state %> <%= order.address.postalCode %>, <%= order.address.country %></p>
+        </aside>
+      </div>
+    </div>
+    <div class="customer-order-actions">
+      <a class="customer-order-invoice" href="/orders/<%= order._id %>/invoice.pdf"><span aria-hidden="true">↓</span> Download invoice</a>
+    <% if(order.paymentMethod==='Razorpay' && order.status==='Payment Pending' && razorpayKeyId){ %>
+      <button class="customer-order-primary-action"
+        id="razorpay-checkout-button"
+        type="button"
+        data-key="<%= razorpayKeyId %>"
+        data-amount="<%= Math.round(order.total * 100) %>"
+        data-order-id="<%= order.razorpayOrderId %>"
+        data-description="Order <%= order.orderNumber %>"
+        data-verify-url="/orders/<%= order._id %>/payment/verify"
+        data-failed-url="/orders/<%= order._id %>/payment/failed"
+        data-dismiss-url="/orders/<%= order._id %>?payment=<%= encodeURIComponent('Payment was not completed. You can continue from this page.') %>"
+      >Pay securely with Razorpay</button>
+      <p id="razorpay-checkout-error" role="alert" hidden></p>
+    <% } %>
+    <% if(order.paymentMethod==='Razorpay' && order.paymentStatus==='Failed' && order.status==='Payment Pending'){ %>
+      <form method="post" action="/orders/<%= order._id %>/payment/retry" class="customer-order-action-form"><button class="customer-order-primary-action" type="submit">Try payment again</button></form>
+    <% } %>
+    <% if(order.paymentMethod==='Razorpay' && order.status==='Payment Pending' && !razorpayKeyId){ %>
+      <p class="payment-note" role="alert">Online payment is currently unavailable. Please contact the store for help with this order.</p>
+    <% } %>
+    <% if(['Payment Pending','Placed','Processing'].includes(order.status)){ %>
+      <form class="customer-order-action-form" method="post" action="/orders/<%= order._id %>/cancel" onsubmit="return confirm('Cancel this order?')">
+        <button class="secondary customer-cancel-button" type="submit">Cancel order</button>
+      </form>
+    <% } %>
+    <% if(order.status==='Delivered' && (!order.returnRequestedAt || order.returnStatus==='Rejected') && Date.now() - new Date(order.deliveredAt || order.updatedAt).getTime() <= 7 * 24 * 60 * 60 * 1000){ %>
+      <form class="customer-order-action-form" method="post" action="/orders/<%= order._id %>/return" onsubmit="return confirm('Request a return? Approved refunds are added to your wallet.')"><button class="secondary customer-cancel-button" type="submit">Request a return</button></form>
+    <% } %>
+    <% if(order.status==='Return Requested'){ %><p class="payment-note">Return requested. The store team will review it.</p><% } %>
+    </div>
+  </main>
+  <% if(order.paymentMethod==='Razorpay' && order.status==='Payment Pending' && razorpayKeyId){ %>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+      const checkoutError = document.getElementById('razorpay-checkout-error');
+      const checkoutButton = document.getElementById('razorpay-checkout-button');
+      const showCheckoutError = (message) => {
+        checkoutError.textContent = message;
+        checkoutError.hidden = false;
+      };
+
+      checkoutButton.addEventListener('click', () => {
+        if (!checkoutButton.dataset.orderId) {
+          showCheckoutError('This order is missing its Razorpay reference. Please try again or contact support.');
+          return;
+        }
+
+        if (typeof window.Razorpay !== 'function') {
+          showCheckoutError('Razorpay checkout could not be loaded. Check your internet connection and try again.');
+          return;
+        }
+
+        try {
+          const checkout = new window.Razorpay({
+            key: checkoutButton.dataset.key,
+            amount: Number(checkoutButton.dataset.amount),
+            currency: 'INR',
+            name: 'Orvella',
+            description: checkoutButton.dataset.description,
+            order_id: checkoutButton.dataset.orderId,
+            handler: (response) => {
+              const form = document.createElement('form');
+              form.method = 'post';
+              form.action = checkoutButton.dataset.verifyUrl;
+              for (const [name, value] of Object.entries(response)) {
+                const input = document.createElement('input');
+                input.type = 'hidden'; input.name = name; input.value = value;
+                form.appendChild(input);
+              }
+              document.body.appendChild(form);
+              form.submit();
+            },
+            modal: { ondismiss: () => { location.href = checkoutButton.dataset.dismissUrl; } }
+          });
+          checkout.on('payment.failed', (response) => {
+            fetch(checkoutButton.dataset.failedUrl, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ message: response.error && response.error.description })
+            }).finally(() => location.reload());
+          });
+          checkout.open();
+        } catch (error) {
+          showCheckoutError('Razorpay checkout could not be opened. Please try again or contact support.');
+          console.error('Could not open Razorpay checkout:', error);
+        }
+      });
+    </script>
+  <% } %>
+</body>
+</html>

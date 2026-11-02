@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Orvella | Cart</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="store-page customer-page customer-cart-page">
+  <%- include('partials/store-header') %>
+  <main class="page-shell">
+    <% const appliedCoupon = typeof coupon === 'undefined' ? null : coupon; %>
+    <p class="page-kicker"><a href="/products">← Continue shopping</a></p>
+    <header class="customer-page-heading"><div><p class="customer-eyebrow">A FEW GOOD THINGS</p><h1>Your shopping bag</h1><p>Nearly yours. Take one last look before checking out.</p></div><span class="customer-count-pill"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M5 8h14l1 12H4L5 8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 9V6a3 3 0 0 1 6 0v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><%= items.length %> <%= items.length === 1 ? 'item' : 'items' %></span></header>
+    <% if(error){ %><p role="alert"><%= error %></p><% } %>
+    <% if(items.length){ %>
+      <div class="cart-layout">
+        <section class="panel cart-items" aria-label="Cart items">
+          <% items.forEach(item => { %>
+            <article class="cart-row">
+              <img src="<%= item.product.images[0] || '' %>" alt="<%= item.product.name %>" width="112" height="112">
+              <div class="cart-item-details">
+                <h2><a href="/products/<%= item.product._id %>"><%= item.product.name %></a></h2>
+                <p><%= item.available ? `₹${item.unitPrice.toFixed(2)} each · ${item.product.stock} in stock` : `Unavailable or only ${item.product.stock} in stock; adjust quantity or remove this item.` %></p>
+                <% if(item.couponCode){ %><p>Coupon <strong><%= item.couponCode %></strong> applied.</p><% } %>
+                <div class="cart-item-actions">
+                  <form method="post" action="/cart/<%= item.product._id %>/update">
+                    <label for="quantity-<%= item.product._id %>">Qty</label>
+                    <input id="quantity-<%= item.product._id %>" name="quantity" type="number" min="1" max="<%= item.product.stock %>" value="<%= item.quantity %>" required>
+                    <button type="submit">Update</button>
+                  </form>
+                  <form method="post" action="/cart/<%= item.product._id %>/remove">
+                    <button class="secondary" type="submit">Remove</button>
+                  </form>
+                </div>
+              </div>
+              <strong class="cart-line-total"><%= item.available ? `₹${item.lineTotal.toFixed(2)}` : '—' %></strong>
+            </article>
+          <% }) %>
+        </section>
+        <aside class="panel cart-summary">
+          <p class="customer-eyebrow">THE FINAL DETAILS</p><h2>Order summary</h2>
+          <form class="cart-coupon-form" method="post" action="/cart/coupon/apply">
+            <label for="cart-coupon-code">Coupon code</label>
+            <div><input id="cart-coupon-code" name="code" maxlength="40" value="<%= appliedCoupon ? appliedCoupon.code : '' %>" placeholder="Enter code" <%= appliedCoupon ? 'disabled' : '' %>><% if(appliedCoupon){ %><button class="secondary" type="submit" formaction="/cart/coupon/remove">Remove</button><% } else { %><button type="submit">Apply</button><% } %></div>
+          </form>
+          <p><span>Subtotal</span><strong>₹<%= subtotal.toFixed(2) %></strong></p>
+          <% if(appliedCoupon){ %><p><span>Coupon <%= appliedCoupon.code %></span><strong>−₹<%= discount.toFixed(2) %></strong></p><% } %>
+          <p><span>Shipping</span><strong>₹<%= shipping.toFixed(2) %></strong></p>
+          <p class="cart-total"><span>Total</span><strong>₹<%= total.toFixed(2) %></strong></p>
+          <% if(items.every(item => item.available)){ %><a class="button" href="/checkout">Continue to checkout</a><% } %>
+        </aside>
+      </div>
+    <% } else { %>
+      <section class="panel empty-state">
+        <span class="customer-empty-art" aria-hidden="true">▢</span><p class="customer-eyebrow">GOOD THINGS GO QUICKLY</p><h2>Your bag is taking a little breather.</h2>
+        <p>Find something you love and it will be waiting here.</p>
+        <a class="button" href="/products">Find something lovely <span aria-hidden="true">→</span></a>
+      </section>
+    <% } %>
+  </main>
+</body>
+</html>
